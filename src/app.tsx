@@ -3,6 +3,7 @@ import { Component, type ReactNode } from 'react';
 import Header from './view/header';
 import Main from './view/main';
 import { searchLSService } from './utils/local-storage';
+import { getPokemon } from './service/pokemon';
 
 export default class App extends Component {
   state = {
@@ -18,7 +19,23 @@ export default class App extends Component {
     searchLSService.set(value);
   };
 
-  handleSearchClick = async (): Promise<void> => {};
+  setPokemon = async (): Promise<void> => {
+    const data = await getPokemon(this.state.searchValue);
+
+    this.setState({
+      pokemonItems: data,
+    });
+  };
+
+  async componentDidMount(): Promise<void> {
+    await this.setPokemon();
+  }
+
+  handleSearchClick = async (): Promise<void> => {
+    await this.setPokemon();
+
+    console.log('search click');
+  };
 
   render(): ReactNode {
     return (
@@ -28,7 +45,7 @@ export default class App extends Component {
           handleSearchInputChange={this.setSearchValue}
           handleSearchClick={this.handleSearchClick}
         />
-        <Main />
+        <Main pokemonData={this.state.pokemonItems} />
       </>
     );
   }

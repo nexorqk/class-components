@@ -2,7 +2,7 @@ import { Component, type ReactNode } from 'react';
 
 type Props = {
   children: ReactNode;
-  handleSearchClick: () => Promise<void>;
+  onClick: () => Promise<void>;
 };
 
 export default class Button extends Component<Props> {
@@ -10,7 +10,7 @@ export default class Button extends Component<Props> {
     return (
       <button
         className="text-white bg-blue-700 cursor-pointer hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 active:text-yellow-400"
-        onClick={this.props.handleSearchClick}
+        onClick={this.props.onClick}
       >
         {this.props.children}
       </button>

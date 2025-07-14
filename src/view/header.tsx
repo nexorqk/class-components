@@ -1,5 +1,7 @@
 import { Component, type ReactNode } from 'react';
+
 import Button from '../components/button';
+import SearchInput from '../components/search-input';
 
 type Props = {
   searchInputValue: string;
@@ -8,27 +10,14 @@ type Props = {
 };
 
 export default class Header extends Component<Props> {
-  searchId = 'search-value';
-
   render(): ReactNode {
     return (
-      <header className="p-4">
-        <label htmlFor={this.searchId} className="text-xl font-bold">
-          Search pokemon by name:
-        </label>
-        <div className="flex gap-4 items-center">
-          <input
-            className="border-2 border-gray-400 rounded-md"
-            id={this.searchId}
-            value={this.props.searchInputValue}
-            onChange={(event) =>
-              this.props.handleSearchInputChange(event.target.value)
-            }
-          />
-          <Button handleSearchClick={this.props.handleSearchClick}>
-            Search
-          </Button>
-        </div>
+      <header className="flex mx-auto px-2 py-4 gap-4 items-end max-w-4xl">
+        <SearchInput
+          searchInputValue={this.props.searchInputValue}
+          handleSearchInputChange={this.props.handleSearchInputChange}
+        />
+        <Button onClick={this.props.handleSearchClick}>Search</Button>
       </header>
     );
   }
