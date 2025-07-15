@@ -10,7 +10,7 @@ export default class SearchInput extends Component<Props> {
 
   render(): ReactNode {
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-3">
         <label htmlFor={this.searchId} className="text-xl font-bold">
           Search pokemon by name:
         </label>

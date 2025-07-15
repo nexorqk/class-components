@@ -6,13 +6,14 @@ import PokemonCard from '../components/pokemon-card';
 
 type Props = {
   pokemonData: PokemonList | Pokemon | null;
+  pokemonIsLoadingData: boolean;
 };
 
 export default class Main extends Component<Props> {
   render(): ReactNode {
     return (
-      <main className="p-6">
-        <Loader />
+      <main className="py-6 px-2 max-w-4xl mx-auto">
+        {this.props.pokemonIsLoadingData && <Loader />}
         {this.props.pokemonData && 'results' in this.props.pokemonData ? (
           <ul className="text-2xl">
             Pokemon list:

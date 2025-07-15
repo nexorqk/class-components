@@ -9,6 +9,7 @@ export default class App extends Component {
   state = {
     searchValue: searchLSService.get(),
     pokemonItems: null,
+    pokemonIsLoadingData: true,
   };
 
   setSearchValue = (value: string): void => {
@@ -24,6 +25,7 @@ export default class App extends Component {
 
     this.setState({
       pokemonItems: data,
+      pokemonIsLoadingData: false,
     });
   };
 
@@ -45,7 +47,10 @@ export default class App extends Component {
           handleSearchInputChange={this.setSearchValue}
           handleSearchClick={this.handleSearchClick}
         />
-        <Main pokemonData={this.state.pokemonItems} />
+        <Main
+          pokemonData={this.state.pokemonItems}
+          pokemonIsLoadingData={this.state.pokemonIsLoadingData}
+        />
       </>
     );
   }
