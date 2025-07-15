@@ -8,7 +8,7 @@ import { getPokemon } from './service/pokemon';
 export default class App extends Component {
   state = {
     searchValue: searchLSService.get(),
-    pokemonItems: [],
+    pokemonItems: null,
   };
 
   setSearchValue = (value: string): void => {

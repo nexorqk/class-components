@@ -1,9 +1,11 @@
 import { Component, type ReactNode } from 'react';
+
 import Loader from '../components/loader';
-import type { PokemonList } from '../types/pokemon';
+import type { Pokemon, PokemonList } from '../types/pokemon';
+import PokemonCard from '../components/pokemon-card';
 
 type Props = {
-  pokemonData: PokemonList;
+  pokemonData: PokemonList | Pokemon | null;
 };
 
 export default class Main extends Component<Props> {
@@ -11,7 +13,7 @@ export default class Main extends Component<Props> {
     return (
       <main className="p-6">
         <Loader />
-        {this.props.pokemonData.results !== undefined && (
+        {this.props.pokemonData && 'results' in this.props.pokemonData ? (
           <ul className="text-2xl">
             Pokemon list:
             {this.props.pokemonData.results.map((item) => (
@@ -20,6 +22,8 @@ export default class Main extends Component<Props> {
               </li>
             ))}
           </ul>
+        ) : (
+          <PokemonCard data={this.props.pokemonData} />
         )}
       </main>
     );

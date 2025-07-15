@@ -1,11 +1,21 @@
 import { Component, type ReactNode } from 'react';
+import type { Pokemon } from '../types/pokemon';
 
-export default class PokemonCard extends Component {
+type Props = {
+  data: Pokemon | null;
+};
+
+export default class PokemonCard extends Component<Props> {
   render(): ReactNode {
+    if (this.props.data === null) return;
+
+    const { name, weight } = this.props.data;
+
     return (
-      <>
-        <div>Pokemon Card</div>
-      </>
+      <div className="p-4 border">
+        <h2>Name: {name}</h2>
+        <p>Weight: {weight}</p>
+      </div>
     );
   }
 }
