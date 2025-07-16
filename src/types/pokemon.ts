@@ -8,7 +8,17 @@ export type PokemonList = {
   }[];
 };
 
+type Ability = {
+  ability: {
+    name: string;
+    url: string;
+  };
+  is_hidden: boolean;
+  slot: number | null;
+};
+
 export type Pokemon = {
   name: string;
   weight: number;
+  abilities: Ability[];
 };

@@ -22,6 +22,10 @@ export default class App extends Component {
   };
 
   setPokemon = async (): Promise<void> => {
+    this.setState({
+      pokemonIsLoadingData: true,
+    });
+
     const data = await getPokemon(this.state.searchValue);
 
     this.setState({
