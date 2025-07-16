@@ -19,8 +19,6 @@ export default class App extends Component {
     this.setState({
       searchValue: value,
     });
-
-    searchLSService.set(value);
   };
 
   setPokemon = async (): Promise<void> => {
@@ -38,6 +36,8 @@ export default class App extends Component {
 
   handleSearchClick = async (): Promise<void> => {
     await this.setPokemon();
+
+    searchLSService.set(this.state.searchValue);
   };
 
   handleErrorButtonClick = (): void => {
