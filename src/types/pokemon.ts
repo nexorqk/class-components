@@ -3,7 +3,7 @@ export type PokemonList = {
   next: string | null;
   previous: string | null;
   results: {
-    name: string;
+    name: string | undefined;
     url: string;
   }[];
 };

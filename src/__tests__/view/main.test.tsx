@@ -102,7 +102,10 @@ describe('Main', () => {
     });
 
     it('Displays "no results" message when data array is empty', () => {
-      render(
+      const checkHeading = () => {
+        expect(screen.getByRole('heading')).toHaveTextContent('No Results');
+      };
+      const { rerender } = render(
         <Main
           pokemonData={{
             count: 1302,
@@ -113,8 +116,10 @@ describe('Main', () => {
           pokemonIsLoadingData={false}
         />
       );
+      checkHeading();
 
-      expect(screen.getByRole('heading')).toHaveTextContent('No Results');
+      rerender(<Main pokemonData={undefined} pokemonIsLoadingData={false} />);
+      checkHeading();
     });
 
     it('Shows loading state while fetching data', () => {
@@ -122,5 +127,55 @@ describe('Main', () => {
 
       expect(screen.getByRole('alert')).toBeInTheDocument();
     });
+  });
+
+  describe('Data Display', () => {
+    it('Correctly displays item names', () => {
+      render(<Main pokemonData={pokemonData} pokemonIsLoadingData={false} />);
+
+      const list = screen.getAllByRole('listitem');
+
+      list.forEach((item, index) => {
+        const currentPokemon = pokemonData.results[index];
+        if (currentPokemon && currentPokemon.name)
+          expect(item).toHaveTextContent(currentPokemon.name);
+      });
+    });
+
+    it('Handles missing or undefined data gracefully', () => {
+      const pokemonWithMissingValues: PokemonList = {
+        count: pokemonData.count,
+        next: pokemonData.next,
+        previous: pokemonData.previous,
+        results: [
+          ...pokemonData.results,
+          {
+            name: undefined,
+            url: 'https://pokeapi.co/api/v2/pokemon/2/',
+          },
+          {
+            name: '',
+            url: 'https://pokeapi.co/api/v2/pokemon/2/',
+          },
+        ],
+      };
+
+      render(
+        <Main
+          pokemonData={pokemonWithMissingValues}
+          pokemonIsLoadingData={false}
+        />
+      );
+
+      const listItems = screen.getAllByRole('listitem').slice(-2);
+
+      listItems.forEach((item) => expect(item).toHaveTextContent(/no name/i));
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('Displays error message when API call fails', () => {});
+
+    it('Shows appropriate error for different HTTP status codes (4xx, 5xx)');
   });
 });

@@ -5,7 +5,7 @@ import type { Pokemon, PokemonList } from '../types/pokemon';
 import PokemonCard from '../components/pokemon-card';
 
 type Props = {
-  pokemonData: PokemonList | Pokemon | null;
+  pokemonData: PokemonList | Pokemon | null | undefined;
   pokemonIsLoadingData: boolean;
 };
 
@@ -27,8 +27,8 @@ export default class Main extends Component<Props> {
           <ul className="text-2xl">
             Pokemon list:
             {this.props.pokemonData.results.map((item) => (
-              <li key={item.name}>
-                <h3 className="text-xl">- {item.name}</h3>
+              <li key={item.name || 'no name'}>
+                <h3 className="text-xl">- {item.name || 'no name'}</h3>
               </li>
             ))}
           </ul>
