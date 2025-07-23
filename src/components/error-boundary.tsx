@@ -1,10 +1,10 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
-import Button from './button';
+import Button from './ui/button';
 
 type Props = {
   children: ReactNode;
-  headerComponent?: ReactNode;
+  searchComponent?: ReactNode;
   resetErrorButton: () => void;
 };
 
@@ -35,7 +35,7 @@ export default class ErrorBoundary extends Component<Props> {
     if (this.state.hasError) {
       return (
         <>
-          {this.props.headerComponent}
+          {this.props.searchComponent}
           <div className="max-w-4xl mx-auto text-xl text-red-500 p-4">
             Error description:
             <h2>{this.state.error}</h2>

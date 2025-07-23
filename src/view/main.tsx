@@ -1,6 +1,6 @@
 import { Component, type ReactNode } from 'react';
 
-import Loader from '../components/loader';
+import Loader from '../components/ui/loader';
 import type { Pokemon, PokemonList } from '../types/pokemon';
 import PokemonCard from '../components/pokemon-card';
 
@@ -13,8 +13,9 @@ export default class Main extends Component<Props> {
   render(): ReactNode {
     return (
       <main className="py-6 px-2 max-w-4xl mx-auto">
-        {this.props.pokemonIsLoadingData && <Loader />}
-        {this.props.pokemonData && 'results' in this.props.pokemonData ? (
+        {this.props.pokemonIsLoadingData ? (
+          <Loader />
+        ) : this.props.pokemonData && 'results' in this.props.pokemonData ? (
           <ul className="text-2xl">
             Pokemon list:
             {this.props.pokemonData.results.map((item) => (

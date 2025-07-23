@@ -3,7 +3,7 @@ import { Component, type ReactNode } from 'react';
 
 type Props = {
   children: ReactNode;
-  onClick: () => Promise<void> | void;
+  onClick?: () => Promise<void> | void;
   secondary?: boolean;
   isError?: boolean;
 };

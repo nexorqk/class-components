@@ -1,15 +1,14 @@
 import { Component, type ReactNode } from 'react';
 
-import Header from './view/header';
 import Main from './view/main';
 import { searchLSService } from './utils/local-storage';
 import { getPokemon } from './service/pokemon';
 import ErrorBoundary from './components/error-boundary';
-import Button from './components/button';
+import Button from './components/ui/button';
+import Search from './components/search';
 
 export default class App extends Component {
   state = {
-    searchValue: searchLSService.get(),
     pokemonItems: null,
     pokemonIsLoadingData: true,
     isErrorButtonClick: false,
@@ -21,12 +20,12 @@ export default class App extends Component {
     });
   };
 
-  setPokemon = async (): Promise<void> => {
+  setPokemon = async (searchValue: string): Promise<void> => {
     this.setState({
       pokemonIsLoadingData: true,
     });
 
-    const data = await getPokemon(this.state.searchValue);
+    const data = await getPokemon(searchValue);
 
     this.setState({
       pokemonItems: data,
@@ -35,14 +34,8 @@ export default class App extends Component {
   };
 
   async componentDidMount(): Promise<void> {
-    await this.setPokemon();
+    await this.setPokemon(searchLSService.get());
   }
-
-  handleSearchClick = async (): Promise<void> => {
-    await this.setPokemon();
-
-    searchLSService.set(this.state.searchValue);
-  };
 
   handleErrorButtonClick = (): void => {
     this.setState({
@@ -57,22 +50,14 @@ export default class App extends Component {
   };
 
   render(): ReactNode {
+    const searchComponent = <Search setPokemon={this.setPokemon} />;
+
     return (
       <ErrorBoundary
         resetErrorButton={this.resetErrorButton}
-        headerComponent={
-          <Header
-            searchInputValue={this.state.searchValue}
-            handleSearchInputChange={this.setSearchValue}
-            handleSearchClick={this.handleSearchClick}
-          />
-        }
+        searchComponent={searchComponent}
       >
-        <Header
-          searchInputValue={this.state.searchValue}
-          handleSearchInputChange={this.setSearchValue}
-          handleSearchClick={this.handleSearchClick}
-        />
+        {searchComponent}
         <Main
           pokemonData={this.state.pokemonItems}
           pokemonIsLoadingData={this.state.pokemonIsLoadingData}
