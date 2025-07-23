@@ -11,6 +11,14 @@ type Props = {
 
 export default class Main extends Component<Props> {
   render(): ReactNode {
+    if (
+      !this.props.pokemonData ||
+      ('results' in this.props.pokemonData &&
+        this.props.pokemonData.results.length === 0)
+    ) {
+      return <h1 className="text-3xl">No Results</h1>;
+    }
+
     return (
       <main className="py-6 px-2 max-w-4xl mx-auto">
         {this.props.pokemonIsLoadingData ? (
