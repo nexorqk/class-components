@@ -10,4 +10,7 @@ export const handlers = [
   http.get(`${API_URL}/pokemon/${pokemon.name}`, () => {
     return HttpResponse.json(pokemon);
   }),
+  http.get(`${API_URL}/poko`, () => {
+    return HttpResponse.error();
+  }),
 ];

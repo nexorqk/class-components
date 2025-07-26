@@ -14,12 +14,6 @@ export default class App extends Component {
     isErrorButtonClick: false,
   };
 
-  setSearchValue = (value: string): void => {
-    this.setState({
-      searchValue: value,
-    });
-  };
-
   setPokemon = async (searchValue: string): Promise<void> => {
     this.setState({
       pokemonIsLoadingData: true,

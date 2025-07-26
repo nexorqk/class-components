@@ -1,23 +1,39 @@
+import { render, screen, waitFor } from '@testing-library/react';
+import { http, HttpResponse } from 'msw';
+import App from '../app';
+import { API_URL } from '../service/pokemon';
+import { pokemonList } from './mocks/data';
+import { server } from './mocks/node';
+
 describe('App', () => {
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
+  afterEach(() => {
+    server.resetHandlers();
+  });
+
   describe('Integration Tests', () => {
-    it('Makes initial API call on component mount', () => {});
+    it('Makes initial API call on component mount', async () => {
+      server.use(
+        http.get(`${API_URL}/pokemon`, () => {
+          return HttpResponse.json(pokemonList);
+        })
+      );
 
-    it('Handles search term from localStorage on initial load', () => {});
+      render(<App />);
 
-    it('Manages loading states during API calls', () => {});
-  });
+      await waitFor(() => {
+        const pokemonItems = screen.getAllByRole('listitem');
 
-  describe('API Integration Tests', () => {
-    it('Calls API with correct parameters', () => {});
+        pokemonItems.forEach((item, index) => {
+          const currentItem = pokemonList.results[index];
 
-    it('Handles successful API responses', () => {});
-
-    it('Handles API error responses', () => {});
-  });
-
-  describe('State Management Tests', () => {
-    it('Updates component state based on API responses', () => {});
-
-    it('Manages search term state correctly', () => {});
+          if (currentItem.name)
+            expect(item).toHaveTextContent(currentItem.name);
+        });
+      });
+    });
   });
 });
