@@ -1,8 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import Search from '../../components/search';
-import { getPokemon } from '../../service/pokemon';
 import { searchLSService } from '../../utils/local-storage';
 import { getNormalizedString } from '../../utils/normalize';
 
@@ -11,14 +9,9 @@ beforeEach(() => {
 });
 
 describe('Search', () => {
-  const setPokemon = async (searchValue: string) => {
-    await getPokemon(searchValue);
-  };
-  const user = userEvent.setup();
-
   describe('Rendering', () => {
     it('Renders search input and search button', () => {
-      render(<Search setPokemon={setPokemon} />);
+      render(<Search setPokemon={vi.fn()} />);
 
       expect(screen.getByRole('textbox')).toBeInTheDocument();
 
@@ -29,30 +22,30 @@ describe('Search', () => {
       const previousValue = 'charmeleon';
       searchLSService.set(previousValue);
 
-      render(<Search setPokemon={setPokemon} />);
+      render(<Search setPokemon={vi.fn()} />);
 
       expect(screen.getByRole('textbox')).toHaveValue(searchLSService.get());
     });
 
     it('Shows empty input when no saved term exists', () => {
-      render(<Search setPokemon={setPokemon} />);
+      render(<Search setPokemon={vi.fn()} />);
 
       expect(screen.getByRole('textbox')).toHaveValue('');
     });
 
     describe('User Interaction', () => {
-      it('Updates input value when user types', async () => {
+      it('Updates input value when user types', () => {
         const typedValue = '1241451';
 
-        render(<Search setPokemon={setPokemon} />);
+        render(<Search setPokemon={vi.fn()} />);
 
         const input = screen.getByRole('textbox');
 
-        await user.type(input, typedValue);
+        fireEvent.change(input, { target: { value: typedValue } });
         expect(input).toHaveValue(typedValue);
       });
 
-      it('Saves search term to localStorage when search form is submitted', async () => {
+      it('Saves search term to localStorage when search form is submitted', () => {
         const newValue = 'kakuna';
 
         const handlePokemon = async (value: string) => {
@@ -60,21 +53,23 @@ describe('Search', () => {
         };
         render(<Search setPokemon={handlePokemon} />);
 
-        await user.type(screen.getByRole('textbox'), newValue);
-        await user.click(screen.getByRole('button'));
+        fireEvent.change(screen.getByRole('textbox'), {
+          target: { value: newValue },
+        });
+        fireEvent.click(screen.getByRole('button'));
 
         expect(searchLSService.get()).toBe(newValue);
       });
 
-      it('Trims whitespace from search input before saving', async () => {
+      it('Trims whitespace from search input before saving', () => {
         const typedValue = '   some query text   ';
 
-        render(<Search setPokemon={setPokemon} />);
+        render(<Search setPokemon={vi.fn()} />);
 
         const input = screen.getByRole('textbox');
 
-        await user.type(input, typedValue);
-        await user.click(screen.getByRole('button'));
+        fireEvent.change(input, { target: { value: typedValue } });
+        fireEvent.click(screen.getByRole('button'));
 
         expect(input).toHaveValue(getNormalizedString(typedValue));
       });
@@ -85,12 +80,12 @@ describe('Search', () => {
         const searchValue = 'wartortle';
         searchLSService.set(searchValue);
 
-        render(<Search setPokemon={setPokemon} />);
+        render(<Search setPokemon={vi.fn()} />);
 
         expect(screen.getByRole('textbox')).toHaveValue(searchValue);
       });
 
-      it('Overwrites existing localStorage value when new search is performed', async () => {
+      it('Overwrites existing localStorage value when new search is performed', () => {
         const searchValue = 'wartortle';
         searchLSService.set(searchValue);
 
@@ -102,9 +97,8 @@ describe('Search', () => {
         render(<Search setPokemon={handlePokemon} />);
 
         const input = screen.getByRole('textbox');
-        await user.clear(input);
-        await user.type(input, newSearchValue);
-        await user.click(screen.getByRole('button'));
+        fireEvent.change(input, { target: { value: newSearchValue } });
+        fireEvent.click(screen.getByRole('button'));
 
         expect(input).toHaveValue(searchLSService.get());
       });

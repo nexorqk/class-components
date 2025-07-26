@@ -21,20 +21,23 @@ export default class Main extends Component<Props> {
 
     return (
       <main className="py-6 px-2 max-w-4xl mx-auto">
-        {this.props.pokemonIsLoadingData ? (
-          <Loader />
-        ) : this.props.pokemonData && 'results' in this.props.pokemonData ? (
-          <ul className="text-2xl">
-            Pokemon list:
-            {this.props.pokemonData.results.map((item) => (
-              <li key={item.name || 'no name'}>
-                <h3 className="text-xl">- {item.name || 'no name'}</h3>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <PokemonCard data={this.props.pokemonData} />
-        )}
+        <Loader isLoading={this.props.pokemonIsLoadingData} />
+        {!this.props.pokemonIsLoadingData &&
+          this.props.pokemonData &&
+          'results' in this.props.pokemonData && (
+            <ul className="text-2xl">
+              Pokemon list:
+              {this.props.pokemonData.results.map((item) => (
+                <li key={item.name || 'no name'}>
+                  <h3 className="text-xl">- {item.name || 'no name'}</h3>
+                </li>
+              ))}
+            </ul>
+          )}
+        {!this.props.pokemonIsLoadingData &&
+          'name' in this.props.pokemonData && (
+            <PokemonCard data={this.props.pokemonData} />
+          )}
       </main>
     );
   }
