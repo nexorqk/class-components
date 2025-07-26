@@ -1,4 +1,4 @@
-export const fetchResponse = async (request: Request): Promise<unknown> => {
+export const fetchResponse = async <T>(request: Request): Promise<T> => {
   try {
     const response = await fetch(request);
 
@@ -6,7 +6,9 @@ export const fetchResponse = async (request: Request): Promise<unknown> => {
       throw new Error(`Status of failed request ${response.status}`);
     }
 
-    return await response.json();
+    const data: T = await response.json();
+
+    return data;
   } catch (error) {
     if (error && error instanceof Error) throw new Error(error.message);
     else throw new Error('API reponse error');

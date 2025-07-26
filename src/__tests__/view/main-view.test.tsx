@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import MainView from '../../view/main-view';
+import { MainView } from '../../view/main-view';
 import type { PokemonList } from '../../types/pokemon';
 import { pokemon, pokemonList } from '../mocks/data';
 

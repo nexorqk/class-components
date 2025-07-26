@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import Search from '../../components/search';
+import { Search } from '../../components/search';
 import { searchLSService } from '../../utils/local-storage';
 import { getNormalizedString } from '../../utils/normalize';
 

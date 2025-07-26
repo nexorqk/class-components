@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
-import App from '../app';
+import { App } from '../app';
 import { API_URL } from '../service/pokemon';
 import { pokemonList } from './mocks/data';
 import { server } from './mocks/node';

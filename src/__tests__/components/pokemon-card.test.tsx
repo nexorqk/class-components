@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import PokemonCard from '../../components/pokemon-card';
+import { PokemonCard } from '../../components/pokemon-card';
 import { pokemon } from '../mocks/data';
 
 describe('PokemonCard', () => {
