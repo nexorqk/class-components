@@ -42,8 +42,6 @@ describe('ErrorBoundary', () => {
 
       checkErrorUI();
     });
-
-    it('Logs error to console', () => {});
   });
 
   describe('Error Button', () => {
