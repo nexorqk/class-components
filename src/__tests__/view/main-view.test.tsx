@@ -1,13 +1,15 @@
 import { render, screen } from '@testing-library/react';
 
-import Main from '../../view/main';
+import MainView from '../../view/main-view';
 import type { PokemonList } from '../../types/pokemon';
-import { pokemonList } from '../mocks/data';
+import { pokemon, pokemonList } from '../mocks/data';
 
-describe('Main', () => {
+describe('MainView', () => {
   describe('Rendering', () => {
     it('Renders correct number of items when data is provided', () => {
-      render(<Main pokemonIsLoadingData={false} pokemonData={pokemonList} />);
+      render(
+        <MainView pokemonIsLoadingData={false} pokemonData={pokemonList} />
+      );
 
       expect(screen.getAllByRole('listitem')).toHaveLength(
         pokemonList.results.length
@@ -19,24 +21,23 @@ describe('Main', () => {
         expect(screen.getByRole('heading')).toHaveTextContent('No Results');
       };
       const { rerender } = render(
-        <Main
-          pokemonData={{
-            count: 1302,
-            next: 'https://pokeapi.co/api/v2/pokemon?offset=20&limit=20',
-            previous: null,
-            results: [],
-          }}
+        <MainView
+          pokemonData={{ ...pokemonList, results: [] }}
           pokemonIsLoadingData={false}
         />
       );
       checkHeading();
 
-      rerender(<Main pokemonData={undefined} pokemonIsLoadingData={false} />);
+      rerender(
+        <MainView pokemonData={undefined} pokemonIsLoadingData={false} />
+      );
       checkHeading();
     });
 
     it('Shows loading state while fetching data', () => {
-      render(<Main pokemonIsLoadingData={true} pokemonData={pokemonList} />);
+      render(
+        <MainView pokemonIsLoadingData={true} pokemonData={pokemonList} />
+      );
 
       expect(screen.getByRole('alert')).toBeInTheDocument();
     });
@@ -44,7 +45,9 @@ describe('Main', () => {
 
   describe('Data Display', () => {
     it('Correctly displays item names', () => {
-      render(<Main pokemonData={pokemonList} pokemonIsLoadingData={false} />);
+      render(
+        <MainView pokemonData={pokemonList} pokemonIsLoadingData={false} />
+      );
 
       const list = screen.getAllByRole('listitem');
 
@@ -57,9 +60,7 @@ describe('Main', () => {
 
     it('Handles missing or undefined data gracefully', () => {
       const pokemonWithMissingValues: PokemonList = {
-        count: pokemonList.count,
-        next: pokemonList.next,
-        previous: pokemonList.previous,
+        ...pokemonList,
         results: [
           ...pokemonList.results,
           {
@@ -74,7 +75,7 @@ describe('Main', () => {
       };
 
       render(
-        <Main
+        <MainView
           pokemonData={pokemonWithMissingValues}
           pokemonIsLoadingData={false}
         />
@@ -83,6 +84,13 @@ describe('Main', () => {
       const listItems = screen.getAllByRole('listitem').slice(-2);
 
       listItems.forEach((item) => expect(item).toHaveTextContent(/no name/i));
+    });
+
+    it('If only one pokemon renders pokemonCard not list', () => {
+      render(<MainView pokemonData={pokemon} pokemonIsLoadingData={false} />);
+
+      expect(screen.queryByText(/pokemon list/i)).not.toBeInTheDocument();
+      expect(screen.getByText(/name:/i)).toHaveTextContent(pokemon.name);
     });
   });
 

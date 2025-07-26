@@ -9,7 +9,7 @@ type Props = {
   pokemonIsLoadingData: boolean;
 };
 
-export default class Main extends Component<Props> {
+export default class MainView extends Component<Props> {
   render(): ReactNode {
     if (
       !this.props.pokemonData ||
@@ -28,7 +28,7 @@ export default class Main extends Component<Props> {
             <ul className="text-2xl">
               Pokemon list:
               {this.props.pokemonData.results.map((item) => (
-                <li key={item.name || 'no name'}>
+                <li key={item.name || `no name ${crypto.randomUUID()}`}>
                   <h3 className="text-xl">- {item.name || 'no name'}</h3>
                 </li>
               ))}

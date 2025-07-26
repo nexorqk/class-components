@@ -1,6 +1,6 @@
 import { Component, type ReactNode } from 'react';
 
-import Main from './view/main';
+import MainView from './view/main-view';
 import { searchLSService } from './utils/local-storage';
 import { getPokemon } from './service/pokemon';
 import ErrorBoundary from './components/error-boundary';
@@ -58,7 +58,7 @@ export default class App extends Component {
         searchComponent={searchComponent}
       >
         {searchComponent}
-        <Main
+        <MainView
           pokemonData={this.state.pokemonItems}
           pokemonIsLoadingData={this.state.pokemonIsLoadingData}
         />
