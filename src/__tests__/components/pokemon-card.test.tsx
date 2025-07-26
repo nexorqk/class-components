@@ -1,30 +1,26 @@
-// import type { Pokemon } from '../../types/pokemon';
+import { render, screen } from '@testing-library/react';
+import PokemonCard from '../../components/pokemon-card';
+import { pokemon } from '../mocks/data';
 
 describe('PokemonCard', () => {
-  // const pokemon: Pokemon = {
-  //   name: 'squirtle',
-  //   abilities: [
-  //     {
-  //       ability: {
-  //         name: 'torrent',
-  //         url: 'https://pokeapi.co/api/v2/ability/67/',
-  //       },
-  //       is_hidden: false,
-  //       slot: 1,
-  //     },
-  //     {
-  //       ability: {
-  //         name: 'rain-dish',
-  //         url: 'https://pokeapi.co/api/v2/ability/44/',
-  //       },
-  //       is_hidden: true,
-  //       slot: 3,
-  //     },
-  //   ],
-  //   weight: 90,
-  // };
+  it('Displays item name and description correctly', () => {
+    render(<PokemonCard data={pokemon} />);
 
-  it('Displays item name and description correctly', () => {});
+    expect(screen.getByText(/name:/i)).toHaveTextContent(pokemon.name);
+    expect(screen.getByText(/weight:/i)).toHaveTextContent(
+      pokemon.weight.toString()
+    );
 
-  it('Handles missing props gracefully', () => {});
+    pokemon.abilities.forEach((item) =>
+      expect(screen.getByText(item.ability.name)).toHaveTextContent(
+        item.ability.name
+      )
+    );
+  });
+
+  it('Handles missing props gracefully', () => {
+    render(<PokemonCard data={null} />);
+
+    expect(screen.getByRole('heading')).toHaveTextContent('No data');
+  });
 });

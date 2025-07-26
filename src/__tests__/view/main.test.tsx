@@ -2,102 +2,15 @@ import { render, screen } from '@testing-library/react';
 
 import Main from '../../view/main';
 import type { PokemonList } from '../../types/pokemon';
+import { pokemonList } from '../mocks/data';
 
 describe('Main', () => {
-  const pokemonData: PokemonList = {
-    count: 1302,
-    next: 'https://pokeapi.co/api/v2/pokemon?offset=20&limit=20',
-    previous: null,
-    results: [
-      {
-        name: 'bulbasaur',
-        url: 'https://pokeapi.co/api/v2/pokemon/1/',
-      },
-      {
-        name: 'ivysaur',
-        url: 'https://pokeapi.co/api/v2/pokemon/2/',
-      },
-      {
-        name: 'venusaur',
-        url: 'https://pokeapi.co/api/v2/pokemon/3/',
-      },
-      {
-        name: 'charmander',
-        url: 'https://pokeapi.co/api/v2/pokemon/4/',
-      },
-      {
-        name: 'charmeleon',
-        url: 'https://pokeapi.co/api/v2/pokemon/5/',
-      },
-      {
-        name: 'charizard',
-        url: 'https://pokeapi.co/api/v2/pokemon/6/',
-      },
-      {
-        name: 'squirtle',
-        url: 'https://pokeapi.co/api/v2/pokemon/7/',
-      },
-      {
-        name: 'wartortle',
-        url: 'https://pokeapi.co/api/v2/pokemon/8/',
-      },
-      {
-        name: 'blastoise',
-        url: 'https://pokeapi.co/api/v2/pokemon/9/',
-      },
-      {
-        name: 'caterpie',
-        url: 'https://pokeapi.co/api/v2/pokemon/10/',
-      },
-      {
-        name: 'metapod',
-        url: 'https://pokeapi.co/api/v2/pokemon/11/',
-      },
-      {
-        name: 'butterfree',
-        url: 'https://pokeapi.co/api/v2/pokemon/12/',
-      },
-      {
-        name: 'weedle',
-        url: 'https://pokeapi.co/api/v2/pokemon/13/',
-      },
-      {
-        name: 'kakuna',
-        url: 'https://pokeapi.co/api/v2/pokemon/14/',
-      },
-      {
-        name: 'beedrill',
-        url: 'https://pokeapi.co/api/v2/pokemon/15/',
-      },
-      {
-        name: 'pidgey',
-        url: 'https://pokeapi.co/api/v2/pokemon/16/',
-      },
-      {
-        name: 'pidgeotto',
-        url: 'https://pokeapi.co/api/v2/pokemon/17/',
-      },
-      {
-        name: 'pidgeot',
-        url: 'https://pokeapi.co/api/v2/pokemon/18/',
-      },
-      {
-        name: 'rattata',
-        url: 'https://pokeapi.co/api/v2/pokemon/19/',
-      },
-      {
-        name: 'raticate',
-        url: 'https://pokeapi.co/api/v2/pokemon/20/',
-      },
-    ],
-  };
-
   describe('Rendering', () => {
     it('Renders correct number of items when data is provided', () => {
-      render(<Main pokemonIsLoadingData={false} pokemonData={pokemonData} />);
+      render(<Main pokemonIsLoadingData={false} pokemonData={pokemonList} />);
 
       expect(screen.getAllByRole('listitem')).toHaveLength(
-        pokemonData.results.length
+        pokemonList.results.length
       );
     });
 
@@ -123,7 +36,7 @@ describe('Main', () => {
     });
 
     it('Shows loading state while fetching data', () => {
-      render(<Main pokemonIsLoadingData={true} pokemonData={pokemonData} />);
+      render(<Main pokemonIsLoadingData={true} pokemonData={pokemonList} />);
 
       expect(screen.getByRole('alert')).toBeInTheDocument();
     });
@@ -131,12 +44,12 @@ describe('Main', () => {
 
   describe('Data Display', () => {
     it('Correctly displays item names', () => {
-      render(<Main pokemonData={pokemonData} pokemonIsLoadingData={false} />);
+      render(<Main pokemonData={pokemonList} pokemonIsLoadingData={false} />);
 
       const list = screen.getAllByRole('listitem');
 
       list.forEach((item, index) => {
-        const currentPokemon = pokemonData.results[index];
+        const currentPokemon = pokemonList.results[index];
         if (currentPokemon && currentPokemon.name)
           expect(item).toHaveTextContent(currentPokemon.name);
       });
@@ -144,11 +57,11 @@ describe('Main', () => {
 
     it('Handles missing or undefined data gracefully', () => {
       const pokemonWithMissingValues: PokemonList = {
-        count: pokemonData.count,
-        next: pokemonData.next,
-        previous: pokemonData.previous,
+        count: pokemonList.count,
+        next: pokemonList.next,
+        previous: pokemonList.previous,
         results: [
-          ...pokemonData.results,
+          ...pokemonList.results,
           {
             name: undefined,
             url: 'https://pokeapi.co/api/v2/pokemon/2/',

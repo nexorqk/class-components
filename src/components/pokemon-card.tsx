@@ -2,12 +2,13 @@ import { Component, type ReactNode } from 'react';
 import type { Pokemon } from '../types/pokemon';
 
 type Props = {
-  data: Pokemon | null;
+  data: Pokemon | null | undefined;
 };
 
 export default class PokemonCard extends Component<Props> {
   render(): ReactNode {
-    if (this.props.data === null) return;
+    if (this.props.data === null || this.props.data === undefined)
+      return <h2>No data</h2>;
 
     const { name, weight, abilities } = this.props.data;
 
