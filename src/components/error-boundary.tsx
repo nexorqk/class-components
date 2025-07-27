@@ -2,7 +2,6 @@ import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 type Props = {
   children: ReactNode;
-  searchComponent?: ReactNode;
 };
 
 export default class ErrorBoundary extends Component<Props> {
@@ -22,13 +21,10 @@ export default class ErrorBoundary extends Component<Props> {
   render(): ReactNode {
     if (this.state.hasError) {
       return (
-        <>
-          {this.props.searchComponent}
-          <div className="max-w-4xl mx-auto text-xl text-red-500 p-4">
-            Error description:
-            <h2>{this.state.error}</h2>
-          </div>
-        </>
+        <div className="max-w-4xl mx-auto text-xl text-red-500 p-4">
+          Error description:
+          <h2>{this.state.error}</h2>
+        </div>
       );
     }
 

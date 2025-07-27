@@ -1,17 +1,18 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { Search } from '../../components/search';
-import { searchLSService } from '../../utils/local-storage';
+import { Search, searchId } from '../../components/search';
 import { getNormalizedString } from '../../utils/normalize';
 
+const LS = window.localStorage;
+
 beforeEach(() => {
-  localStorage.clear();
+  LS.clear();
 });
 
 describe('Search', () => {
   describe('Rendering', () => {
     it('Renders search input and search button', () => {
-      render(<Search setPokemon={vi.fn()} />);
+      render(<Search initSearchValue="" setPokemon={vi.fn()} />);
 
       expect(screen.getByRole('textbox')).toBeInTheDocument();
 
@@ -20,15 +21,20 @@ describe('Search', () => {
 
     it('Displays previously saved search term from localStorage on mount', () => {
       const previousValue = 'charmeleon';
-      searchLSService.set(previousValue);
+      LS.setItem(searchId, previousValue);
 
-      render(<Search setPokemon={vi.fn()} />);
+      render(
+        <Search
+          initSearchValue={LS.getItem(searchId) || ''}
+          setPokemon={vi.fn()}
+        />
+      );
 
-      expect(screen.getByRole('textbox')).toHaveValue(searchLSService.get());
+      expect(screen.getByRole('textbox')).toHaveValue(previousValue);
     });
 
     it('Shows empty input when no saved term exists', () => {
-      render(<Search setPokemon={vi.fn()} />);
+      render(<Search initSearchValue="" setPokemon={vi.fn()} />);
 
       expect(screen.getByRole('textbox')).toHaveValue('');
     });
@@ -37,7 +43,7 @@ describe('Search', () => {
       it('Updates input value when user types', () => {
         const typedValue = '1241451';
 
-        render(<Search setPokemon={vi.fn()} />);
+        render(<Search initSearchValue="" setPokemon={vi.fn()} />);
 
         const input = screen.getByRole('textbox');
 
@@ -49,22 +55,22 @@ describe('Search', () => {
         const newValue = 'kakuna';
 
         const handlePokemon = async (value: string) => {
-          searchLSService.set(value);
+          LS.setItem(searchId, value);
         };
-        render(<Search setPokemon={handlePokemon} />);
+        render(<Search initSearchValue="" setPokemon={handlePokemon} />);
 
         fireEvent.change(screen.getByRole('textbox'), {
           target: { value: newValue },
         });
         fireEvent.click(screen.getByRole('button'));
 
-        expect(searchLSService.get()).toBe(newValue);
+        expect(LS.getItem(searchId)).toBe(newValue);
       });
 
       it('Trims whitespace from search input before saving', () => {
         const typedValue = '   some query text   ';
 
-        render(<Search setPokemon={vi.fn()} />);
+        render(<Search initSearchValue="" setPokemon={vi.fn()} />);
 
         const input = screen.getByRole('textbox');
 
@@ -78,29 +84,34 @@ describe('Search', () => {
     describe('LocalStorage Integration', () => {
       it('Retrieves saved search term on component mount', () => {
         const searchValue = 'wartortle';
-        searchLSService.set(searchValue);
+        LS.setItem(searchId, searchValue);
 
-        render(<Search setPokemon={vi.fn()} />);
+        render(
+          <Search
+            initSearchValue={LS.getItem(searchId) || ''}
+            setPokemon={vi.fn()}
+          />
+        );
 
         expect(screen.getByRole('textbox')).toHaveValue(searchValue);
       });
 
       it('Overwrites existing localStorage value when new search is performed', () => {
         const searchValue = 'wartortle';
-        searchLSService.set(searchValue);
+        LS.setItem(searchId, searchValue);
 
         const newSearchValue = 'bulbasaur';
         const handlePokemon = async (value: string) => {
-          searchLSService.set(value);
+          LS.setItem(searchId, value);
         };
 
-        render(<Search setPokemon={handlePokemon} />);
+        render(<Search initSearchValue="" setPokemon={handlePokemon} />);
 
         const input = screen.getByRole('textbox');
         fireEvent.change(input, { target: { value: newSearchValue } });
         fireEvent.click(screen.getByRole('button'));
 
-        expect(input).toHaveValue(searchLSService.get());
+        expect(input).toHaveValue(LS.getItem(searchId));
       });
     });
   });

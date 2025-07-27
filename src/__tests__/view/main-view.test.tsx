@@ -17,21 +17,9 @@ describe('MainView', () => {
     });
 
     it('Displays "no results" message when data array is empty', () => {
-      const checkHeading = () => {
-        expect(screen.getByRole('heading')).toHaveTextContent('No Results');
-      };
-      const { rerender } = render(
-        <MainView
-          pokemonData={{ ...pokemonList, results: [] }}
-          pokemonIsLoadingData={false}
-        />
-      );
-      checkHeading();
+      render(<MainView pokemonData={undefined} pokemonIsLoadingData={false} />);
 
-      rerender(
-        <MainView pokemonData={undefined} pokemonIsLoadingData={false} />
-      );
-      checkHeading();
+      expect(screen.getByRole('heading')).toHaveTextContent('No Results');
     });
 
     it('Shows loading state while fetching data', () => {

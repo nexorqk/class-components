@@ -1,19 +1,18 @@
 import { useState, type FormEvent } from 'react';
 
 import { Button } from './ui/button';
-import { searchLSService } from '../utils/local-storage';
 import { getNormalizedString } from '../utils/normalize';
 
 type Props = {
+  initSearchValue: string;
   setPokemon: (value: string) => Promise<void>;
 };
 
 const WARNING_TEXT = "Please enter the Pokémon's exact name.";
-const searchId = 'search-value';
+export const searchId = 'search-value';
 
-export const Search = ({ setPokemon }: Props) => {
-  const [searchValue, setSearchValue] = useState(searchLSService.get());
-
+export const Search = ({ initSearchValue, setPokemon }: Props) => {
+  const [searchValue, setSearchValue] = useState(initSearchValue);
   const handleFormSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
@@ -22,8 +21,6 @@ export const Search = ({ setPokemon }: Props) => {
     setSearchValue(normalizedValue);
 
     await setPokemon(normalizedValue);
-
-    searchLSService.set(normalizedValue);
   };
 
   return (

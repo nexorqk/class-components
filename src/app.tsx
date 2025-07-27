@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import ErrorBoundary from './components/error-boundary';
-import { Search } from './components/search';
+import { Search, searchId } from './components/search';
 import { getPokemon } from './service/pokemon';
 import type { Pokemon, PokemonList } from './types/pokemon';
-import { searchLSService } from './utils/local-storage';
 import { MainView } from './view/main-view';
+import { useSearchLocalStorage } from './hooks/search-local-storage';
 
 export const App = () => {
+  const [search, setSearch] = useSearchLocalStorage();
   const [pokemonItems, setPokemonItems] = useState<
     Pokemon | PokemonList | null
   >(null);
@@ -19,23 +19,22 @@ export const App = () => {
     const data: PokemonList | Pokemon = await getPokemon(searchValue);
 
     setPokemonItems(data);
+    setSearch(searchValue);
     setPokemonIsLoadingData(false);
   };
 
   useEffect(() => {
-    setPokemon(searchLSService.get());
+    setPokemon(window.localStorage.getItem(searchId) || '');
   }, []);
 
-  const searchComponent = <Search setPokemon={setPokemon} />;
-
   return (
-    <ErrorBoundary searchComponent={searchComponent}>
-      {searchComponent}
+    <>
+      <Search initSearchValue={search} setPokemon={setPokemon} />
       <MainView
         pokemonData={pokemonItems}
         pokemonIsLoadingData={pokemonIsLoadingData}
       />
       <div className="flex justify-end p-6 max-w-3xl mx-auto"></div>
-    </ErrorBoundary>
+    </>
   );
 };
