@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router';
 
 import ErrorBoundary from './components/error-boundary.tsx';
-import { router } from './router.tsx';
+import { router } from './routes.ts';
 
 import './index.css';
 

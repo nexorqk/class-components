@@ -1,9 +1,5 @@
-type Props = {
-  isLoading: boolean;
-};
-
-export const Loader = (props: Props) => {
-  if (!props.isLoading) return null;
+export const Loader = ({ isLoading }: { isLoading?: boolean }) => {
+  if (!isLoading) return null;
 
   return (
     <div

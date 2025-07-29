@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { Search, searchId } from './components/search';
+import { Outlet, useNavigate } from 'react-router';
+import { Navigation } from './components/navigation';
+import { Search } from './components/search';
+import { useSearchLocalStorage } from './hooks/search-local-storage';
 import { getPokemon } from './service/pokemon';
 import type { Pokemon, PokemonList } from './types/pokemon';
-import { MainView } from './view/main-view';
-import { useSearchLocalStorage } from './hooks/search-local-storage';
+import type { MainData } from './view/main-view';
 
 export const App = () => {
   const [search, setSearch] = useSearchLocalStorage();
@@ -13,28 +15,46 @@ export const App = () => {
   >(null);
   const [pokemonIsLoadingData, setPokemonIsLoadingData] = useState(true);
 
-  const setPokemon = async (searchValue: string): Promise<void> => {
-    setPokemonIsLoadingData(true);
+  const navigate = useNavigate();
 
-    const data: PokemonList | Pokemon = await getPokemon(searchValue);
+  const setPokemon = useCallback(
+    async (searchValue: string, offset?: number): Promise<void> => {
+      setPokemonIsLoadingData(true);
 
-    setPokemonItems(data);
-    setSearch(searchValue);
-    setPokemonIsLoadingData(false);
-  };
+      const data: PokemonList | Pokemon = await getPokemon(searchValue, offset);
+
+      setPokemonItems(data);
+      setSearch(searchValue);
+      setPokemonIsLoadingData(false);
+    },
+    [setSearch]
+  );
 
   useEffect(() => {
-    setPokemon(window.localStorage.getItem(searchId) || '');
-  }, []);
+    const page = '1';
+    setPokemon(search);
+
+    if (search !== '') navigate(`pokemon/${search}`);
+    else {
+      navigate(`pokemon/list/${page}/bulbasaur`);
+    }
+  }, [search, setPokemon, navigate]);
 
   return (
     <>
-      <Search initSearchValue={search} setPokemon={setPokemon} />
-      <MainView
-        pokemonData={pokemonItems}
-        pokemonIsLoadingData={pokemonIsLoadingData}
+      <header className="mx-auto px-2 py-4 max-w-4xl space-y-1">
+        <Navigation />
+        <Search initSearchValue={search} setPokemon={setPokemon} />
+      </header>
+      <Outlet
+        context={
+          {
+            setPokemon,
+            pokemonData: pokemonItems,
+            pokemonIsLoadingData,
+          } satisfies MainData
+        }
       />
-      <div className="flex justify-end p-6 max-w-3xl mx-auto"></div>
     </>
   );
 };

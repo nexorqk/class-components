@@ -24,7 +24,7 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
   };
 
   return (
-    <header className="mx-auto px-2 py-4 max-w-4xl space-y-1">
+    <>
       <form className="flex gap-4 items-end" onSubmit={handleFormSubmit}>
         <div className="flex flex-col gap-3">
           <label htmlFor={searchId} className="text-xl font-bold">
@@ -40,6 +40,6 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
         <Button>Search</Button>
       </form>
       <p className="text-sm text-amber-600 max-w-[240px]">{WARNING_TEXT}</p>
-    </header>
+    </>
   );
 };
