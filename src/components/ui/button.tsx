@@ -6,6 +6,7 @@ type Props = {
   onClick?: () => Promise<void> | void;
   secondary?: boolean;
   isError?: boolean;
+  disabled?: boolean;
 };
 
 export const Button = (props: Props) => {
@@ -14,12 +15,14 @@ export const Button = (props: Props) => {
   return (
     <button
       className={cn(
-        'text-white cursor-pointer rounded-lg text-sm px-4 py-2 active:text-yellow-400',
+        'text-white cursor-pointer rounded-lg text-sm px-4 py-2 ',
+        !props.disabled && 'active:text-yellow-400',
         props.secondary
           ? 'bg-amber-500 font-bold'
-          : 'bg-blue-700 hover:bg-blue-800 font-medium'
+          : `${props.disabled ? 'bg-slate-500' : 'bg-blue-700 hover:bg-blue-800 font-medium'}`
       )}
       onClick={props.onClick}
+      disabled={props.disabled}
     >
       {props.children}
     </button>

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 
 import { Button } from './ui/button';
 import { getNormalizedString } from '../utils/normalize';
+import { useLocation } from 'react-router';
 
 type Props = {
   initSearchValue: string;
@@ -13,6 +14,8 @@ export const searchId = 'search-value';
 
 export const Search = ({ initSearchValue, setPokemon }: Props) => {
   const [searchValue, setSearchValue] = useState(initSearchValue);
+  const location = useLocation();
+
   const handleFormSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
@@ -23,6 +26,8 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
     await setPokemon(normalizedValue);
   };
 
+  const isDisabled = location.pathname === '/about';
+
   return (
     <>
       <form className="flex gap-4 items-end" onSubmit={handleFormSubmit}>
@@ -31,13 +36,14 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
             Search pokemon by name:
           </label>
           <input
+            disabled={isDisabled}
             className="border-2 border-gray-400 rounded-md"
             id={searchId}
             value={searchValue}
             onChange={(event) => setSearchValue(event.target.value)}
           />
         </div>
-        <Button>Search</Button>
+        <Button disabled={isDisabled}>Search</Button>
       </form>
       <p className="text-sm text-amber-600 max-w-[240px]">{WARNING_TEXT}</p>
     </>
