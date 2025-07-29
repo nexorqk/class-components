@@ -1,33 +1,39 @@
+import { useNavigate, useParams } from 'react-router';
 import { cn } from '../../utils/cn';
-import { getCurrentPage, getCurrentPagesArray } from '../../utils/page-counter';
+import {
+  getCurrentPagesArray,
+  getOffsetByPage,
+} from '../../utils/page-counter';
 
 type Props = {
   countOfitems: number;
-  next: string | null;
-  previous: string | null;
   setPokemon: (searchValue: string, offset?: number) => Promise<void>;
 };
 
-export const Pagination = ({ countOfitems, next, previous }: Props) => {
+export const Pagination = ({ countOfitems, setPokemon }: Props) => {
   const countOfPage = Math.floor(countOfitems / 20);
   const pagesArray = Array.from(
     { length: countOfPage },
     (_, index) => 1 + index
   );
 
-  console.log(previous);
+  const navigate = useNavigate();
+  const params = useParams();
 
-  const PREV = 'https://pokeapi.co/api/v2/pokemon?offset=333&limit=20';
-
-  const currentPage = getCurrentPage(next, PREV, pagesArray.length);
+  const currentPage = parseInt(params['page'] || '1');
   console.log(currentPage);
 
   const currentPagesArray = getCurrentPagesArray(pagesArray, currentPage);
 
-  // TODO
-  // const handlePageClick = () => {
-  //   setPokemonData('Link with correct offset');
-  // };
+  console.log(currentPagesArray);
+
+  const handlePageClick = (page: number) => {
+    const currentOffset = getOffsetByPage(page);
+    console.log(page);
+    navigate(`/pokemon/list/${page}`);
+
+    setPokemon('', currentOffset);
+  };
 
   return (
     <div className="mt-6 border-t">
@@ -46,6 +52,7 @@ export const Pagination = ({ countOfitems, next, previous }: Props) => {
                   </div>
                 )}
                 <Number
+                  onClick={handlePageClick}
                   key={number}
                   number={number}
                   currentPage={currentPage}
@@ -53,7 +60,12 @@ export const Pagination = ({ countOfitems, next, previous }: Props) => {
               </div>
             ))
           : currentPagesArray.map((number) => (
-              <Number key={number} number={number} currentPage={currentPage} />
+              <Number
+                onClick={handlePageClick}
+                key={number}
+                number={number}
+                currentPage={currentPage}
+              />
             ))}
       </div>
     </div>
@@ -63,15 +75,20 @@ export const Pagination = ({ countOfitems, next, previous }: Props) => {
 const Number = ({
   number,
   currentPage,
+  onClick,
 }: {
   number: number;
   currentPage: number;
+  onClick: (currentPage: number) => void;
 }) => {
   return (
     <p
       className={cn(
-        number === currentPage ? 'text-amber-600' : 'text-blue-500'
+        number === currentPage ? 'text-amber-600' : 'text-blue-500',
+        'cursor-pointer px-4 py-1',
+        number !== currentPage && 'hover:text-blue-800 transition-colors'
       )}
+      onClick={() => onClick(number)}
     >
       {number}
     </p>

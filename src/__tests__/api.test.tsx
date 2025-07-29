@@ -21,7 +21,7 @@ describe('API', () => {
     });
   });
 
-  it('Get pokemon returns right value with empty value and pokemno name', async () => {
+  it('Get pokemon returns right value with empty value and pokemon name', async () => {
     const dataList = await getPokemon('');
     expect(dataList).toEqual(pokemonList);
 

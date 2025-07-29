@@ -1,23 +1,31 @@
-import { Outlet, useOutletContext } from 'react-router';
+import { Outlet, useNavigate, useOutletContext } from 'react-router';
 import { type MainData } from '../view/main-view';
 import { Pagination } from './ui/pagination';
 import { type Pokemon } from '../types/pokemon';
 import { getPokemon } from '../service/pokemon';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export const PokemonList = () => {
   const { pokemonData, setPokemon } = useOutletContext<MainData>();
+  const [currentPokemonName, setCurrentPokemonName] = useState('');
   const [onePokemon, setOnePokemon] = useState<Pokemon>();
 
-  const getOnePokemon = async () => {
-    const pokemon = await getPokemon('bulbasaur');
+  const navigate = useNavigate();
+
+  const getOnePokemon = useCallback(async () => {
+    const pokemon = await getPokemon(currentPokemonName || 'bulbasaur');
 
     if ('abilities' in pokemon) setOnePokemon(pokemon);
-  };
+  }, [currentPokemonName]);
 
   useEffect(() => {
     getOnePokemon();
-  }, []);
+  }, [currentPokemonName, getOnePokemon]);
+
+  const handlePokemonClick = (pokemonName: string) => {
+    setCurrentPokemonName(pokemonName);
+    navigate(pokemonName);
+  };
 
   if (pokemonData === undefined || pokemonData === null) return null;
 
@@ -28,8 +36,13 @@ export const PokemonList = () => {
           <ul className="text-2xl">
             Pokemon list:
             {pokemonData.results.map((item) => (
-              <li key={item.name || `no name ${crypto.randomUUID()}`}>
-                <h3 className="text-xl">- {item.name || 'no name'}</h3>
+              <li key={item.name}>
+                <h3
+                  onClick={() => handlePokemonClick(item.name)}
+                  className="text-xl"
+                >
+                  - {item.name}
+                </h3>
               </li>
             ))}
           </ul>
@@ -45,12 +58,12 @@ export const PokemonList = () => {
             )}
           </div>
         </div>
-        <Pagination
-          setPokemon={setPokemon}
-          countOfitems={pokemonData.count}
-          next={pokemonData.next}
-          previous={pokemonData.previous}
-        />
+        {pokemonData && (
+          <Pagination
+            setPokemon={setPokemon}
+            countOfitems={pokemonData.count}
+          />
+        )}
       </>
     );
   }
