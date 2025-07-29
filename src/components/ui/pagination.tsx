@@ -26,8 +26,9 @@ export const Pagination = ({ countOfitems, setPokemon }: Props) => {
 
   const handlePageClick = (page: number) => {
     const currentOffset = getOffsetByPage(page);
-    console.log(page);
-    navigate(`/pokemon/list/${page}`);
+    navigate(
+      `/pokemon/list/${page}${params.pokemonName && `/${params.pokemonName}`}`
+    );
 
     setPokemon('', currentOffset);
   };

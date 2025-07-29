@@ -8,15 +8,18 @@ import { Loader } from './ui/loader';
 
 export const PokemonList = () => {
   const { pokemonData, setPokemon } = useOutletContext<MainData>();
-  const [currentPokemonName, setCurrentPokemonName] = useState('');
-  const [onePokemon, setOnePokemon] = useState<Pokemon>();
-  const [isOneLoading, setIsOneLoading] = useState(false);
-
   const navigate = useNavigate();
   const params = useParams();
 
+  const [currentPokemonName, setCurrentPokemonName] = useState(
+    params.pokemonName || ''
+  );
+  const [onePokemon, setOnePokemon] = useState<Pokemon>();
+  const [isOneLoading, setIsOneLoading] = useState(false);
+
   const getOnePokemon = useCallback(async () => {
     setIsOneLoading(true);
+    console.log(currentPokemonName);
     const pokemon = await getPokemon(currentPokemonName || 'bulbasaur');
 
     if ('abilities' in pokemon) {
