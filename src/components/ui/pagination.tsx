@@ -21,11 +21,8 @@ export const Pagination = ({ countOfitems, setPokemon }: Props) => {
   const params = useParams();
 
   const currentPage = parseInt(params['page'] || '1');
-  console.log(currentPage);
 
   const currentPagesArray = getCurrentPagesArray(pagesArray, currentPage);
-
-  console.log(currentPagesArray);
 
   const handlePageClick = (page: number) => {
     const currentOffset = getOffsetByPage(page);

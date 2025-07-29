@@ -1,5 +1,5 @@
 export const Loader = ({ isLoading }: { isLoading?: boolean }) => {
-  if (!isLoading) return null;
+  if (isLoading === false) return null;
 
   return (
     <div

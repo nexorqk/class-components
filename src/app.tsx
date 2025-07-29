@@ -31,12 +31,11 @@ export const App = () => {
   );
 
   useEffect(() => {
-    const page = '1';
     setPokemon(search);
 
     if (search !== '') navigate(`pokemon/${search}`);
     else {
-      navigate(`pokemon/list/${page}/bulbasaur`);
+      navigate(`pokemon/list/1`);
     }
   }, [search, setPokemon, navigate]);
 
