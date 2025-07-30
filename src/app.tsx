@@ -13,21 +13,37 @@ export const App = () => {
   const [pokemonItems, setPokemonItems] = useState<
     Pokemon | PokemonList | null
   >(null);
-  const [pokemonIsLoadingData, setPokemonIsLoadingData] = useState(true);
+  const [pokemonError, setPokemonError] = useState<string | null>(null);
+  const [pokemonDataIsLoading, setpokemonDataIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
   const setPokemon = useCallback(
     async (searchValue: string, offset?: number): Promise<void> => {
-      setPokemonIsLoadingData(true);
+      setpokemonDataIsLoading(true);
 
-      const data: PokemonList | Pokemon = await getPokemon(searchValue, offset);
+      try {
+        const data: PokemonList | Pokemon = await getPokemon(
+          searchValue,
+          offset
+        );
 
-      setPokemonItems(data);
-      setSearch(searchValue);
-      setPokemonIsLoadingData(false);
+        setPokemonItems(data);
+        setSearch(searchValue);
+        setPokemonError(null);
+      } catch (error) {
+        if (error instanceof Error) {
+          setPokemonError(error.message);
+        } else {
+          setPokemonError(JSON.stringify(error));
+        }
+
+        console.error(error);
+      }
+
+      setpokemonDataIsLoading(false);
     },
-    [setSearch]
+    [setSearch, setPokemonError]
   );
 
   useEffect(() => {
@@ -50,7 +66,8 @@ export const App = () => {
           {
             setPokemon,
             pokemonData: pokemonItems,
-            pokemonIsLoadingData,
+            pokemonDataIsLoading,
+            pokemonError,
           } satisfies MainData
         }
       />

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router';
 
 import { getPokemon } from '../service/pokemon';
@@ -8,7 +8,8 @@ import { Loader } from './ui/loader';
 import { Pagination } from './ui/pagination';
 
 export const PokemonList = () => {
-  const { pokemonData, setPokemon } = useOutletContext<MainData>();
+  const { pokemonData, setPokemon, pokemonError } =
+    useOutletContext<MainData>();
   const navigate = useNavigate();
   const params = useParams();
 
@@ -18,20 +19,21 @@ export const PokemonList = () => {
   const [onePokemon, setOnePokemon] = useState<Pokemon>();
   const [isOneLoading, setIsOneLoading] = useState(false);
 
-  const getOnePokemon = useCallback(async () => {
-    setIsOneLoading(true);
-    console.log(currentPokemonName);
-    const pokemon = await getPokemon(currentPokemonName || 'bulbasaur');
-
-    if ('abilities' in pokemon) {
-      setOnePokemon(pokemon);
-      setIsOneLoading(false);
-    }
-  }, [currentPokemonName]);
-
   useEffect(() => {
+    const getOnePokemon = async () => {
+      setIsOneLoading(true);
+      const pokemon = await getPokemon(currentPokemonName || 'bulbasaur');
+
+      if ('abilities' in pokemon) {
+        setOnePokemon(pokemon);
+        setIsOneLoading(false);
+      }
+
+      // TODO failed fetch from server in UI
+    };
+
     getOnePokemon();
-  }, [currentPokemonName, getOnePokemon]);
+  }, [currentPokemonName]);
 
   const handlePokemonClick = (pokemonName: string) => {
     setCurrentPokemonName(pokemonName);
@@ -49,7 +51,11 @@ export const PokemonList = () => {
       pokemonData.results &&
       pokemonData.results.length === 0)
   ) {
-    return <h1 className="text-3xl">No Results</h1>;
+    return <h2 className="text-3xl">No Results</h2>;
+  }
+
+  if (pokemonError !== null) {
+    return <h2>Fetch data error: {pokemonError}</h2>;
   }
 
   if (pokemonData && 'results' in pokemonData) {
@@ -59,11 +65,8 @@ export const PokemonList = () => {
           <ul className="text-2xl">
             Pokemon list:
             {pokemonData.results.map((item) => (
-              <li key={item.name}>
-                <h3
-                  onClick={() => handlePokemonClick(item.name)}
-                  className="cursor-pointer text-xl text-pink-600 hover:underline decoration-wavy"
-                >
+              <li key={item.name} onClick={() => handlePokemonClick(item.name)}>
+                <h3 className="cursor-pointer text-xl text-pink-600 hover:underline decoration-wavy">
                   - {item.name}
                 </h3>
               </li>

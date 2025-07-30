@@ -6,18 +6,29 @@ import type { Pokemon, PokemonList } from '../types/pokemon';
 export type MainData = {
   setPokemon: (searchValue: string, offset?: number) => Promise<void>;
   pokemonData: PokemonList | Pokemon | null | undefined;
-  pokemonIsLoadingData?: boolean;
+  pokemonDataIsLoading: boolean;
+  pokemonError: string | null;
 };
 
 export const MainView = () => {
-  const { pokemonData, setPokemon, pokemonIsLoadingData } =
+  const { pokemonData, setPokemon, pokemonDataIsLoading, pokemonError } =
     useOutletContext<MainData>();
 
   return (
     <main className="py-6 px-2 max-w-4xl mx-auto">
-      <Loader isLoading={pokemonIsLoadingData} />
+      <Loader isLoading={pokemonDataIsLoading} />
 
-      <Outlet context={{ pokemonData, setPokemon } satisfies MainData} />
+      {!pokemonDataIsLoading && (
+        <Outlet
+          context={
+            {
+              pokemonData,
+              setPokemon,
+              pokemonError,
+            } satisfies Omit<MainData, 'pokemonDataIsLoading'>
+          }
+        />
+      )}
     </main>
   );
 };
