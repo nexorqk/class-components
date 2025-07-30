@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react';
 
-import { Button } from './ui/button';
-import { getNormalizedString } from '../utils/normalize';
 import { useLocation } from 'react-router';
+import { getNormalizedString } from '../utils/normalize';
+import { Button } from './ui/button';
 
 type Props = {
   initSearchValue: string;

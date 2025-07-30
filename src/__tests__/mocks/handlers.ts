@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 
 import { API_URL } from '../../service/pokemon';
-import { pokemon, pokemonList } from './data';
+import { pokemon, pokemonBulbasaur, pokemonList } from './data';
 
 export const handlers = [
   http.get(`${API_URL}/pokemon`, () => {
@@ -9,6 +9,9 @@ export const handlers = [
   }),
   http.get(`${API_URL}/pokemon/${pokemon.name}`, () => {
     return HttpResponse.json(pokemon);
+  }),
+  http.get(`${API_URL}/pokemon/${pokemonBulbasaur.name}`, () => {
+    return HttpResponse.json(pokemonBulbasaur);
   }),
   http.get(`${API_URL}/poko`, () => {
     return HttpResponse.error();

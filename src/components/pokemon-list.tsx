@@ -1,10 +1,11 @@
-import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router';
-import { type MainData } from '../view/main-view';
-import { Pagination } from './ui/pagination';
-import { type Pokemon } from '../types/pokemon';
-import { getPokemon } from '../service/pokemon';
 import { useCallback, useEffect, useState } from 'react';
+import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router';
+
+import { getPokemon } from '../service/pokemon';
+import { type Pokemon } from '../types/pokemon';
+import { type MainData } from '../view/main-view';
 import { Loader } from './ui/loader';
+import { Pagination } from './ui/pagination';
 
 export const PokemonList = () => {
   const { pokemonData, setPokemon } = useOutletContext<MainData>();
@@ -41,7 +42,15 @@ export const PokemonList = () => {
     navigate('');
   };
 
-  if (pokemonData === undefined || pokemonData === null) return null;
+  if (
+    pokemonData === undefined ||
+    pokemonData === null ||
+    ('results' in pokemonData &&
+      pokemonData.results &&
+      pokemonData.results.length === 0)
+  ) {
+    return <h1 className="text-3xl">No Results</h1>;
+  }
 
   if (pokemonData && 'results' in pokemonData) {
     return (
@@ -53,7 +62,7 @@ export const PokemonList = () => {
               <li key={item.name}>
                 <h3
                   onClick={() => handlePokemonClick(item.name)}
-                  className="text-xl"
+                  className="cursor-pointer text-xl text-pink-600 hover:underline decoration-wavy"
                 >
                   - {item.name}
                 </h3>

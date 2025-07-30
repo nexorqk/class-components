@@ -15,15 +15,9 @@ export const MainView = () => {
 
   return (
     <main className="py-6 px-2 max-w-4xl mx-auto">
-      {!pokemonData && !pokemonIsLoadingData && (
-        <h1 className="text-3xl">No Results</h1>
-      )}
-
       <Loader isLoading={pokemonIsLoadingData} />
 
-      {!pokemonIsLoadingData && (
-        <Outlet context={{ pokemonData, setPokemon } satisfies MainData} />
-      )}
+      <Outlet context={{ pokemonData, setPokemon } satisfies MainData} />
     </main>
   );
 };

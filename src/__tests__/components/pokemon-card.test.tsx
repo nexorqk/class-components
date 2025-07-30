@@ -1,10 +1,29 @@
 import { render, screen } from '@testing-library/react';
 import { PokemonCard } from '../../components/pokemon-card';
 import { pokemon } from '../mocks/data';
+import type { Pokemon } from '../../types/pokemon';
+
+let pokemonData: Pokemon | null = pokemon;
 
 describe('PokemonCard', () => {
+  vi.mock('react-router', async () => {
+    const actual = await vi.importActual('react-router');
+
+    return {
+      ...actual,
+
+      useOutletContext: () => ({
+        pokemonData: pokemonData,
+      }),
+    };
+  });
+
+  afterEach(() => {
+    vi.resetAllMocks();
+  });
+
   it('Displays item name and description correctly', () => {
-    render(<PokemonCard data={pokemon} />);
+    render(<PokemonCard />);
 
     expect(screen.getByText(/name:/i)).toHaveTextContent(pokemon.name);
     expect(screen.getByText(/weight:/i)).toHaveTextContent(
@@ -19,7 +38,9 @@ describe('PokemonCard', () => {
   });
 
   it('Handles missing props gracefully', () => {
-    render(<PokemonCard data={null} />);
+    pokemonData = null;
+
+    render(<PokemonCard />);
 
     expect(screen.getByRole('heading')).toHaveTextContent('No data');
   });
