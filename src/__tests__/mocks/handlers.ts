@@ -1,0 +1,19 @@
+import { http, HttpResponse } from 'msw';
+
+import { API_URL } from '../../service/pokemon';
+import { pokemon, pokemonBulbasaur, pokemonList } from './data';
+
+export const handlers = [
+  http.get(`${API_URL}/pokemon`, () => {
+    return HttpResponse.json(pokemonList);
+  }),
+  http.get(`${API_URL}/pokemon/${pokemon.name}`, () => {
+    return HttpResponse.json(pokemon);
+  }),
+  http.get(`${API_URL}/pokemon/${pokemonBulbasaur.name}`, () => {
+    return HttpResponse.json(pokemonBulbasaur);
+  }),
+  http.get(`${API_URL}/poko`, () => {
+    return HttpResponse.error();
+  }),
+];
