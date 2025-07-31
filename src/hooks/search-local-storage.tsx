@@ -5,13 +5,17 @@ import { searchId } from '../components/search';
 const LS = window.localStorage;
 
 export const useSearchLocalStorage = (): [
-  string,
-  React.Dispatch<React.SetStateAction<string>>,
+  string | undefined,
+  React.Dispatch<React.SetStateAction<string | undefined>>,
 ] => {
   const [value, setValue] = useState(() => {
-    const data = LS.getItem(searchId);
-    if (data !== null && typeof data === 'string') return data;
-    return '';
+    try {
+      const data = LS.getItem(searchId);
+      if (data !== null && typeof data === 'string') return data;
+      return '';
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   useEffect(() => {

@@ -5,7 +5,7 @@ import { getNormalizedString } from '../utils/normalize';
 import { Button } from './ui/button';
 
 type Props = {
-  initSearchValue: string;
+  initSearchValue: string | undefined;
   setPokemon: (value: string) => Promise<void>;
 };
 
@@ -19,7 +19,7 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
   const handleFormSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
-    const normalizedValue = getNormalizedString(searchValue);
+    const normalizedValue = getNormalizedString(searchValue || '');
 
     setSearchValue(normalizedValue);
 

@@ -47,7 +47,7 @@ export const App = () => {
   );
 
   useEffect(() => {
-    setPokemon(search);
+    setPokemon(search || '');
 
     if (search !== '') navigate(`pokemon/${search}`);
     else {

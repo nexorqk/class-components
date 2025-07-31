@@ -8,7 +8,7 @@ import { MainView } from './view/main-view';
 import { About } from './view/about';
 import { Loader } from './components/ui/loader';
 
-export const router = createBrowserRouter([
+export const routerConfig = [
   {
     path: '/',
     Component: App,
@@ -44,4 +44,6 @@ export const router = createBrowserRouter([
     path: '*',
     Component: NotFound,
   },
-]);
+];
+
+export const router = createBrowserRouter(routerConfig);
