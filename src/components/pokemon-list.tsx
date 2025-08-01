@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router';
 
 import { getPokemon } from '../service/pokemon';
+import { toggleSelect } from '../store/slices/selected-pokemons';
+import { useAppDispatch } from '../store/store';
 import { type Pokemon } from '../types/pokemon';
 import { type MainData } from '../view/main-view';
 import { Loader } from './ui/loader';
@@ -12,6 +14,8 @@ export const PokemonList = () => {
     useOutletContext<MainData>();
   const navigate = useNavigate();
   const params = useParams();
+
+  const dispatch = useAppDispatch();
 
   const [currentPokemonName, setCurrentPokemonName] = useState(
     params.pokemonName || ''
@@ -65,10 +69,30 @@ export const PokemonList = () => {
           <ul className="text-2xl">
             Pokemon list:
             {pokemonData.results.map((item) => (
-              <li key={item.name} onClick={() => handlePokemonClick(item.name)}>
-                <h3 className="cursor-pointer text-xl text-pink-600 hover:underline decoration-wavy">
-                  - {item.name}
-                </h3>
+              <li
+                key={item.name}
+                className="flex gap-2.5 items-center hover:[&>p]:underline"
+              >
+                <input
+                  id={item.name}
+                  name={item.name}
+                  type="checkbox"
+                  onChange={(event) =>
+                    dispatch(
+                      toggleSelect({
+                        id: event.target.id,
+                        isChecked: event.target.checked,
+                      })
+                    )
+                  }
+                  className="w-4 h-4 cursor-pointer"
+                />
+                <p
+                  className="cursor-pointer text-xl text-pink-600 decoration-wavy decoration-3"
+                  onClick={() => handlePokemonClick(item.name)}
+                >
+                  {item.name}
+                </p>
               </li>
             ))}
           </ul>
