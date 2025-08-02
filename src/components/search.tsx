@@ -1,8 +1,10 @@
-import { useState, type FormEvent } from 'react';
+import { useContext, useState, type FormEvent } from 'react';
 
 import { useLocation } from 'react-router';
 import { getNormalizedString } from '../utils/normalize';
 import { Button } from './ui/button';
+import { ThemeContext } from '../context/theme';
+import { cn } from '../utils/cn';
 
 type Props = {
   initSearchValue: string | undefined;
@@ -15,6 +17,7 @@ export const searchId = 'search-value';
 export const Search = ({ initSearchValue, setPokemon }: Props) => {
   const [searchValue, setSearchValue] = useState(initSearchValue);
   const location = useLocation();
+  const themeIsDark = useContext(ThemeContext);
 
   const handleFormSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
@@ -32,12 +35,21 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
     <>
       <form className="flex gap-4 items-end" onSubmit={handleFormSubmit}>
         <div className="flex flex-col gap-3">
-          <label htmlFor={searchId} className="text-xl font-bold">
+          <label
+            htmlFor={searchId}
+            className={cn(
+              'text-xl font-bold',
+              themeIsDark ? 'text-white' : 'text-slate-900'
+            )}
+          >
             Search pokemon by name:
           </label>
           <input
             disabled={isDisabled}
-            className="border-2 border-gray-400 rounded-md"
+            className={cn(
+              'border-2 border-gray-400 rounded-md',
+              themeIsDark ? 'text-white' : 'text-slate-900'
+            )}
             id={searchId}
             value={searchValue}
             onChange={(event) => setSearchValue(event.target.value)}

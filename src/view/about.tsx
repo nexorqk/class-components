@@ -1,26 +1,40 @@
-export const About = () => (
-  <div className="max-w-4xl mx-auto p-4 flex flex-col gap-4">
-    <h2 className="text-2xl">About:</h2>
-    <div>
-      <h3>Author</h3>
-      <ul className="text-sm">
-        <li>Name: Alexander Alexeichik</li>
-        <li>
-          Github:{' '}
-          <a
-            className="text-blue-500 hover:text-blue-600 underline"
-            href="https://github.com/nexorqk"
-          >
-            link
-          </a>
-        </li>
-      </ul>
-    </div>
-    <a
-      href="https://rs.school/courses/reactjs"
-      className="text-3xl underline text-blue-700 hover:text-blue-800"
+import { useContext } from 'react';
+
+import { ThemeContext } from '../context/theme';
+import { cn } from '../utils/cn';
+
+export const About = () => {
+  const themeIsDark = useContext(ThemeContext);
+
+  return (
+    <div
+      className={cn(
+        'max-w-4xl mx-auto p-4 flex flex-col gap-4',
+        themeIsDark ? 'text-emerald-400' : 'text-slate-900'
+      )}
     >
-      RS School React Course
-    </a>
-  </div>
-);
+      <h2 className="text-2xl">About:</h2>
+      <div>
+        <h3>Author</h3>
+        <ul className="text-sm">
+          <li>Name: Alexander Alexeichik</li>
+          <li>
+            Github:{' '}
+            <a
+              className="text-blue-500 hover:text-blue-600 underline"
+              href="https://github.com/nexorqk"
+            >
+              link
+            </a>
+          </li>
+        </ul>
+      </div>
+      <a
+        href="https://rs.school/courses/reactjs"
+        className="text-3xl underline text-blue-700 hover:text-blue-800"
+      >
+        RS School React Course
+      </a>
+    </div>
+  );
+};

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router';
 
 import { getPokemon } from '../service/pokemon';
@@ -8,12 +8,15 @@ import { type Pokemon } from '../types/pokemon';
 import { type MainData } from '../view/main-view';
 import { Loader } from './ui/loader';
 import { Pagination } from './ui/pagination';
+import { ThemeContext } from '../context/theme';
+import { cn } from '../utils/cn';
 
 export const PokemonList = () => {
   const { pokemonData, setPokemon, pokemonError } =
     useOutletContext<MainData>();
   const navigate = useNavigate();
   const params = useParams();
+  const themeIsDark = useContext(ThemeContext);
 
   const dispatch = useAppDispatch();
 
@@ -66,7 +69,12 @@ export const PokemonList = () => {
     return (
       <>
         <div className="flex gap-10">
-          <ul className="text-2xl">
+          <ul
+            className={cn(
+              'text-2xl',
+              themeIsDark ? 'text-white' : 'text-slate-900'
+            )}
+          >
             Pokemon list:
             {pokemonData.results.map((item) => (
               <li

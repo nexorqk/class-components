@@ -4,6 +4,8 @@ import {
   getCurrentPagesArray,
   getOffsetByPage,
 } from '../../utils/page-counter';
+import { useContext } from 'react';
+import { ThemeContext } from '../../context/theme';
 
 type Props = {
   countOfitems: number;
@@ -11,6 +13,7 @@ type Props = {
 };
 
 export const Pagination = ({ countOfitems, setPokemon }: Props) => {
+  const themeIsDark = useContext(ThemeContext);
   const countOfPage = Math.floor(countOfitems / 20);
   const pagesArray = Array.from(
     { length: countOfPage },
@@ -34,7 +37,12 @@ export const Pagination = ({ countOfitems, setPokemon }: Props) => {
   };
 
   return (
-    <div className="mt-6 border-t">
+    <div
+      className={cn(
+        'mt-6 border-t',
+        themeIsDark ? 'border-t-white' : 'border-t-slate-900'
+      )}
+    >
       <div className="flex gap-3">
         {currentPagesArray[1] > 10
           ? currentPagesArray.map((number, index) => (
