@@ -65,6 +65,14 @@ export const App = () => {
     setThemeStorage(isDark);
   };
 
+  useEffect(() => {
+    if (themeIsDark) {
+      window.document.body.classList.add('bg-slate-900');
+    } else {
+      window.document.body.classList.remove('bg-slate-900');
+    }
+  }, [themeIsDark]);
+
   return (
     <ThemeContext value={themeIsDark}>
       <div
