@@ -6,7 +6,6 @@ import { PokemonList } from './components/pokemon-list';
 import { PokemonCard } from './components/pokemon-card';
 import { MainView } from './view/main-view';
 import { About } from './view/about';
-import { Loader } from './components/ui/loader';
 
 export const routerConfig = [
   {
@@ -24,7 +23,6 @@ export const routerConfig = [
               {
                 path: ':pokemonName',
                 Component: PokemonCard,
-                loader: Loader,
               },
             ],
           },

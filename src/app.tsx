@@ -12,13 +12,13 @@ import { getThemeStorage, setThemeStorage } from './utils/theme-storage';
 import { cn } from './utils/cn';
 
 export const App = () => {
+  const [themeIsDark, setThemeIsDark] = useState(getThemeStorage());
   const [search, setSearch] = useSearchLocalStorage();
   const [pokemonItems, setPokemonItems] = useState<
     Pokemon | PokemonList | null
   >(null);
   const [pokemonError, setPokemonError] = useState<string | null>(null);
   const [pokemonDataIsLoading, setpokemonDataIsLoading] = useState(true);
-  const [themeIsDark, setThemeIsDark] = useState(getThemeStorage());
 
   const navigate = useNavigate();
 

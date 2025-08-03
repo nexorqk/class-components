@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Pokemon } from '../../types/pokemon';
 
 export interface SelectedPokemonsState {
-  pokemons: Pokemon[];
+  pokemons: { name: string; data: Pokemon }[];
   checkedList: {
     name: string;
     isChecked: boolean;
@@ -22,7 +22,6 @@ export const selectedPokemonsSlice = createSlice({
       state,
       action: PayloadAction<{ id: string; isChecked: boolean }>
     ) => {
-      console.log(state);
       const currentIndex = state.checkedList.findIndex(
         (item) => item.name === action.payload.id
       );
