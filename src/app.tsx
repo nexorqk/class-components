@@ -75,49 +75,39 @@ export const App = () => {
 
   return (
     <ThemeContext value={themeIsDark}>
-      <div
-        className={cn(
-          themeIsDark ? 'bg-slate-900' : 'bg-white',
-          'h-dvh w-full'
-        )}
-      >
-        <header className="relative mx-auto px-2 py-4 max-w-4xl space-y-1">
-          <div
-            className={cn(
-              'absolute right-2 top-2 flex gap-2 text-xl',
-              themeIsDark ? 'text-white' : 'text-slate-900/70'
-            )}
+      <header className="relative mx-auto px-2 py-4 max-w-4xl space-y-1">
+        <div
+          className={cn(
+            'absolute right-2 top-2 flex gap-2 text-xl',
+            themeIsDark ? 'text-white' : 'text-slate-900/70'
+          )}
+        >
+          <button
+            className={cn('cursor-pointer', !themeIsDark && 'text-purple-900')}
+            onClick={() => handleSetTheme(false)}
           >
-            <button
-              className={cn(
-                'cursor-pointer',
-                !themeIsDark && 'text-purple-900'
-              )}
-              onClick={() => handleSetTheme(false)}
-            >
-              Light
-            </button>
-            <button
-              className={cn('cursor-pointer', themeIsDark && 'text-purple-400')}
-              onClick={() => handleSetTheme(true)}
-            >
-              Dark
-            </button>
-          </div>
-          <Navigation />
-          <Search initSearchValue={search} setPokemon={setPokemon} />
-        </header>
-        <Outlet
-          context={
-            {
-              setPokemon,
-              pokemonData: pokemonItems,
-              pokemonDataIsLoading,
-              pokemonError,
-            } satisfies MainData
-          }
-        />
-      </div>
+            Light
+          </button>
+          <button
+            className={cn('cursor-pointer', themeIsDark && 'text-purple-400')}
+            onClick={() => handleSetTheme(true)}
+          >
+            Dark
+          </button>
+        </div>
+        <Navigation />
+        <Search initSearchValue={search} setPokemon={setPokemon} />
+      </header>
+      <Outlet
+        context={
+          {
+            setPokemon,
+            pokemonData: pokemonItems,
+            pokemonDataIsLoading,
+            pokemonError,
+          } satisfies MainData
+        }
+      />
     </ThemeContext>
   );
 };

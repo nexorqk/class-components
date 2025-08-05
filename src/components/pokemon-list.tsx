@@ -1,15 +1,16 @@
 import { useContext, useEffect, useState } from 'react';
 import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router';
 
+import { ThemeContext } from '../context/theme';
 import { getPokemon } from '../service/pokemon';
 import { toggleSelect } from '../store/slices/selected-pokemons';
-import { useAppDispatch } from '../store/store';
+import { useAppDispatch, useAppSelector } from '../store/store';
 import { type Pokemon } from '../types/pokemon';
+import { cn } from '../utils/cn';
 import { type MainData } from '../view/main-view';
+import { CheckedPokemon } from './ui/checked-pokemon';
 import { Loader } from './ui/loader';
 import { Pagination } from './ui/pagination';
-import { ThemeContext } from '../context/theme';
-import { cn } from '../utils/cn';
 
 export const PokemonList = () => {
   const { pokemonData, setPokemon, pokemonError } =
@@ -19,6 +20,7 @@ export const PokemonList = () => {
   const themeIsDark = useContext(ThemeContext);
 
   const dispatch = useAppDispatch();
+  const selectedPokemons = useAppSelector((store) => store.selectedPokemons);
 
   const [currentPokemonName, setCurrentPokemonName] = useState(
     params.pokemonName || ''
@@ -51,6 +53,20 @@ export const PokemonList = () => {
     navigate('');
   };
 
+  const storeCheckedList = async (name: string, isChecked: boolean) => {
+    const pokemonData = await getPokemon(name);
+
+    if ('abilities' in pokemonData) {
+      dispatch(
+        toggleSelect({
+          id: name,
+          isChecked: isChecked,
+          data: pokemonData,
+        })
+      );
+    }
+  };
+
   if (
     pokemonData === undefined ||
     pokemonData === null ||
@@ -81,19 +97,14 @@ export const PokemonList = () => {
                 key={item.name}
                 className="flex gap-2.5 items-center hover:[&>p]:underline"
               >
-                <input
-                  id={item.name}
+                <CheckedPokemon
                   name={item.name}
-                  type="checkbox"
-                  onChange={(event) =>
-                    dispatch(
-                      toggleSelect({
-                        id: event.target.id,
-                        isChecked: event.target.checked,
-                      })
-                    )
+                  initialValue={
+                    selectedPokemons.checkedList.find(
+                      (list) => list.name === item.name
+                    )?.isChecked
                   }
-                  className="w-4 h-4 cursor-pointer"
+                  storeCheckedList={storeCheckedList}
                 />
                 <p
                   className="cursor-pointer text-xl text-pink-600 decoration-wavy decoration-3"

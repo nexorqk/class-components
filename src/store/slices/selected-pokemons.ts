@@ -1,16 +1,16 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+
 import type { Pokemon } from '../../types/pokemon';
 
 export interface SelectedPokemonsState {
-  pokemons: { name: string; data: Pokemon }[];
   checkedList: {
     name: string;
     isChecked: boolean;
+    data: Pokemon;
   }[];
 }
 
 const initialState: SelectedPokemonsState = {
-  pokemons: [],
   checkedList: [],
 };
 
@@ -20,7 +20,7 @@ export const selectedPokemonsSlice = createSlice({
   reducers: {
     toggleSelect: (
       state,
-      action: PayloadAction<{ id: string; isChecked: boolean }>
+      action: PayloadAction<{ id: string; isChecked: boolean; data: Pokemon }>
     ) => {
       const currentIndex = state.checkedList.findIndex(
         (item) => item.name === action.payload.id
@@ -34,22 +34,19 @@ export const selectedPokemonsSlice = createSlice({
             {
               name: action.payload.id,
               isChecked: action.payload.isChecked,
+              data: action.payload.data,
             },
           ],
         };
-      } else {
-        return {
-          ...state,
-          checkedList: state.checkedList.map((item, index) => {
-            if (index !== currentIndex) return item;
-
-            return {
-              name: item.name,
-              isChecked: action.payload.isChecked,
-            };
-          }),
-        };
       }
+
+      return {
+        ...state,
+        checkedList: [
+          ...state.checkedList.slice(0, currentIndex),
+          ...state.checkedList.slice(currentIndex + 1),
+        ],
+      };
     },
   },
 });
