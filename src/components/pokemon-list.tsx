@@ -40,8 +40,6 @@ export const PokemonList = () => {
         setOnePokemon(pokemon);
         setIsOneLoading(false);
       }
-
-      // TODO failed fetch from server in UI
     };
 
     getOnePokemon();

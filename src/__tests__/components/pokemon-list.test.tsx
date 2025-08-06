@@ -120,21 +120,6 @@ describe('PokemonList', () => {
     expect(screen.queryByRole('listitem')).not.toBeInTheDocument();
   });
 
-  it('Pokemon click set url param with pokemonName', () => {
-    // pokemonData = pokemonList;
-    // renderRouter();
-    // const listOfItems = screen.getAllByRole('listitem');
-    // const { result } = renderHook(() => useParams());
-    // act(() => {
-    //   fireEvent.click(listOfItems[2]);
-    // });
-    // expect(result.current).toBe(pokemonData.results[2].name);
-    // const { result } = renderHook(() => useSearch(items));
-    // act(() => {
-    //   result.current.setSearchTerm('Wars');
-    // });
-  });
-
   it('Render pokemon detail on click in pokemon list', () => {
     pokemonData = pokemonList;
 
@@ -162,6 +147,41 @@ describe('PokemonList', () => {
         expect(
           screen.getByRole('heading', { name: /data error: 404/i })
         ).toBeInTheDocument();
+      });
+    });
+  });
+  describe('Download selected pokemons', () => {
+    it('Unselect all pokemons on click', () => {
+      pokemonError = null;
+      pokemonData = pokemonList;
+      renderRouter();
+
+      const checkboxesList = screen.getAllByRole('checkbox');
+
+      const firstPokemon = pokemonData.results[1].name;
+      const thirdPokemon = pokemonData.results[3].name;
+      const sevenPokemon = pokemonData.results[7].name;
+
+      checkboxesList.forEach((item) => {
+        if (item.id === firstPokemon) fireEvent.click(item);
+        if (item.id === thirdPokemon) fireEvent.click(item);
+        if (item.id === sevenPokemon) fireEvent.click(item);
+      });
+
+      waitFor(() => {
+        checkboxesList.forEach((item) => {
+          if (item.id === firstPokemon) expect(item).toBeChecked();
+          if (item.id === thirdPokemon) expect(item).toBeChecked();
+          if (item.id === sevenPokemon) expect(item).toBeChecked();
+        });
+      });
+
+      waitFor(() => {
+        fireEvent.click(screen.getByRole('button', { name: /unselect/i }));
+
+        screen
+          .getAllByRole('checkbox')
+          .forEach((item) => expect(item).not.toBeChecked());
       });
     });
   });
