@@ -4,13 +4,13 @@ import { ThemeContext } from '../context/theme';
 import { cn } from '../utils/cn';
 
 export const About = () => {
-  const themeIsDark = useContext(ThemeContext);
+  const isThemeDark = useContext(ThemeContext);
 
   return (
     <div
       className={cn(
         'max-w-4xl mx-auto p-4 flex flex-col gap-4',
-        themeIsDark ? 'text-emerald-400' : 'text-slate-900'
+        isThemeDark ? 'text-emerald-400' : 'text-slate-900'
       )}
     >
       <h2 className="text-2xl">About:</h2>

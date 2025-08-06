@@ -9,7 +9,7 @@ export const PokemonCard = () => {
   const { pokemonData: data } =
     useOutletContext<Pick<MainData, 'pokemonData'>>();
 
-  const themeIsDark = useContext(ThemeContext);
+  const isThemeDark = useContext(ThemeContext);
 
   if (data === null || data === undefined) return <h2>No data</h2>;
 
@@ -20,7 +20,7 @@ export const PokemonCard = () => {
       <div
         className={cn(
           'p-4 border space-y-4',
-          themeIsDark ? 'text-white' : 'text-slate-900'
+          isThemeDark ? 'text-white' : 'text-slate-900'
         )}
       >
         <h2>Name: {name}</h2>

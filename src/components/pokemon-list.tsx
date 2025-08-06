@@ -3,21 +3,22 @@ import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router';
 
 import { ThemeContext } from '../context/theme';
 import { getPokemon } from '../service/pokemon';
-import { toggleSelect } from '../store/slices/selected-pokemons';
+import { toggleSelect, unselect } from '../store/slices/selected-pokemons';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { type Pokemon } from '../types/pokemon';
 import { cn } from '../utils/cn';
 import { type MainData } from '../view/main-view';
-import { CheckedPokemon } from './ui/checked-pokemon';
 import { Loader } from './ui/loader';
 import { Pagination } from './ui/pagination';
+import { SelectedFlyout } from './selected-flyout';
+import { downloadCSV } from '../utils/download-csv';
 
 export const PokemonList = () => {
   const { pokemonData, setPokemon, pokemonError } =
     useOutletContext<MainData>();
   const navigate = useNavigate();
   const params = useParams();
-  const themeIsDark = useContext(ThemeContext);
+  const isThemeDark = useContext(ThemeContext);
 
   const dispatch = useAppDispatch();
   const selectedPokemons = useAppSelector((store) => store.selectedPokemons);
@@ -25,8 +26,10 @@ export const PokemonList = () => {
   const [currentPokemonName, setCurrentPokemonName] = useState(
     params.pokemonName || ''
   );
+
   const [onePokemon, setOnePokemon] = useState<Pokemon>();
   const [isOneLoading, setIsOneLoading] = useState(false);
+  const [isOneItemSelected, setIsOneItemSelected] = useState(false);
 
   useEffect(() => {
     const getOnePokemon = async () => {
@@ -53,18 +56,36 @@ export const PokemonList = () => {
     navigate('');
   };
 
-  const storeCheckedList = async (name: string, isChecked: boolean) => {
+  const handleCheckboxClick = async (name: string, isChecked: boolean) => {
     const pokemonData = await getPokemon(name);
 
     if ('abilities' in pokemonData) {
       dispatch(
         toggleSelect({
           id: name,
-          isChecked: isChecked,
+          isChecked,
           data: pokemonData,
         })
       );
     }
+  };
+
+  useEffect(() => {
+    if (selectedPokemons.checkedList.length > 0) {
+      setIsOneItemSelected(true);
+    } else {
+      setIsOneItemSelected(false);
+    }
+  }, [isOneItemSelected, selectedPokemons]);
+
+  const handleUnselectClick = () => {
+    setIsOneItemSelected(false);
+
+    dispatch(unselect());
+  };
+
+  const handleDownloadClick = () => {
+    downloadCSV(selectedPokemons.checkedList.map((item) => item.data));
   };
 
   if (
@@ -88,7 +109,7 @@ export const PokemonList = () => {
           <ul
             className={cn(
               'text-2xl',
-              themeIsDark ? 'text-white' : 'text-slate-900'
+              isThemeDark ? 'text-white' : 'text-slate-900'
             )}
           >
             Pokemon list:
@@ -97,14 +118,19 @@ export const PokemonList = () => {
                 key={item.name}
                 className="flex gap-2.5 items-center hover:[&>p]:underline"
               >
-                <CheckedPokemon
+                <input
+                  id={item.name}
                   name={item.name}
-                  initialValue={
+                  type="checkbox"
+                  checked={
                     selectedPokemons.checkedList.find(
-                      (list) => list.name === item.name
-                    )?.isChecked
+                      (checkedItem) => checkedItem.name === item.name
+                    )?.isChecked || false
                   }
-                  storeCheckedList={storeCheckedList}
+                  onChange={(event) =>
+                    handleCheckboxClick(item.name, event.target.checked)
+                  }
+                  className="w-4 h-4 cursor-pointer"
                 />
                 <p
                   className="cursor-pointer text-xl text-pink-600 decoration-wavy decoration-3"
@@ -146,6 +172,13 @@ export const PokemonList = () => {
           <Pagination
             setPokemon={setPokemon}
             countOfitems={pokemonData.count}
+          />
+        )}
+        {isOneItemSelected && (
+          <SelectedFlyout
+            handleUnselectClick={handleUnselectClick}
+            handleDownloadClick={handleDownloadClick}
+            countOfItems={selectedPokemons.checkedList.length}
           />
         )}
       </>

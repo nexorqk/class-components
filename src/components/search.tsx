@@ -17,7 +17,7 @@ export const searchId = 'search-value';
 export const Search = ({ initSearchValue, setPokemon }: Props) => {
   const [searchValue, setSearchValue] = useState(initSearchValue);
   const location = useLocation();
-  const themeIsDark = useContext(ThemeContext);
+  const isThemeDark = useContext(ThemeContext);
 
   const handleFormSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
@@ -39,7 +39,7 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
             htmlFor={searchId}
             className={cn(
               'text-xl font-bold',
-              themeIsDark ? 'text-white' : 'text-slate-900'
+              isThemeDark ? 'text-white' : 'text-slate-900'
             )}
           >
             Search pokemon by name:
@@ -48,7 +48,7 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
             disabled={isDisabled}
             className={cn(
               'border-2 border-gray-400 rounded-md',
-              themeIsDark ? 'text-white' : 'text-slate-900'
+              isThemeDark ? 'text-white' : 'text-slate-900'
             )}
             id={searchId}
             value={searchValue}

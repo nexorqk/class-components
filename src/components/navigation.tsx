@@ -5,7 +5,7 @@ import { ThemeContext } from '../context/theme';
 import { cn } from '../utils/cn';
 
 export const Navigation = () => {
-  const themeIsDark = useContext(ThemeContext);
+  const isThemeDark = useContext(ThemeContext);
 
   return (
     <div className="space-x-3 pb-5">
@@ -13,7 +13,7 @@ export const Navigation = () => {
         to="/pokemon/list/1"
         className={({ isActive, isPending }) =>
           cn(
-            themeIsDark ? 'text-white' : 'text-slate-900',
+            isThemeDark ? 'text-white' : 'text-slate-900',
             isPending && 'text-amber-200',
             isActive && 'text-blue-400',
             'text-xl hover:text-blue-700'
@@ -26,7 +26,7 @@ export const Navigation = () => {
         to="/about"
         className={({ isActive, isPending }) =>
           cn(
-            themeIsDark ? 'text-white' : 'text-slate-900',
+            isThemeDark ? 'text-white' : 'text-slate-900',
             isPending && 'text-amber-200',
             isActive && 'text-blue-400',
             'text-xl hover:text-blue-700'

@@ -48,9 +48,15 @@ export const selectedPokemonsSlice = createSlice({
         ],
       };
     },
+    unselect: (state) => {
+      return {
+        ...state,
+        checkedList: [],
+      };
+    },
   },
 });
 
-export const { toggleSelect } = selectedPokemonsSlice.actions;
+export const { toggleSelect, unselect } = selectedPokemonsSlice.actions;
 
 export const selectedPokemonsReducer = selectedPokemonsSlice.reducer;

@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const Pagination = ({ countOfitems, setPokemon }: Props) => {
-  const themeIsDark = useContext(ThemeContext);
+  const isThemeDark = useContext(ThemeContext);
   const countOfPage = Math.floor(countOfitems / 20);
   const pagesArray = Array.from(
     { length: countOfPage },
@@ -41,7 +41,7 @@ export const Pagination = ({ countOfitems, setPokemon }: Props) => {
     <div
       className={cn(
         'mt-6 border-t',
-        themeIsDark ? 'border-t-white' : 'border-t-slate-900'
+        isThemeDark ? 'border-t-white' : 'border-t-slate-900'
       )}
     >
       <div className="flex gap-3">
