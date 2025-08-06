@@ -1,14 +1,48 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  type RenderOptions,
+} from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router';
 
 import { App } from '../../app';
 import { PokemonList as PokemonListComponent } from '../../components/pokemon-list';
 import type { Pokemon, PokemonList } from '../../types/pokemon';
 import { pokemon, pokemonBulbasaur, pokemonList } from '../mocks/data';
+import { Provider } from 'react-redux';
+import { rootReducer, setupStore, type AppStore } from '../../store/store';
+import type { PropsWithChildren } from 'react';
 
 let pokemonData: PokemonList | Pokemon | null = pokemon;
 let pokemonError: null | string = null;
 const mockSetPokemon = vi.fn();
+
+interface ExtendedRenderOptions extends Omit<RenderOptions, 'queries'> {
+  preloadState?: Partial<typeof rootReducer>;
+  store?: AppStore;
+}
+
+function renderWithProviders(
+  ui: React.ReactElement,
+  extendedRenderOptions: ExtendedRenderOptions = {}
+) {
+  const {
+    preloadState = {},
+    store = setupStore(preloadState),
+    ...renderOptions
+  } = extendedRenderOptions;
+
+  const Wrapper = ({ children }: PropsWithChildren) => (
+    <Provider store={store}>{children}</Provider>
+  );
+
+  return {
+    store,
+    ...render(ui, { wrapper: Wrapper, ...renderOptions }),
+  };
+}
 
 describe('PokemonList', () => {
   vi.mock('react-router', async () => {
@@ -30,7 +64,7 @@ describe('PokemonList', () => {
   });
 
   const renderRouter = () =>
-    render(
+    renderWithProviders(
       <MemoryRouter>
         <Routes>
           <Route path="/" element={<App />} />

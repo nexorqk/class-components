@@ -2,7 +2,6 @@ import { API_URL } from '../service/pokemon';
 import type { Pokemon } from '../types/pokemon';
 
 export const downloadCSV = (data: Pokemon[]) => {
-  console.log(data[0].abilities.map((item) => item.ability.name).join(','));
   const csv = [
     ['num', 'name', 'weight', 'one ability', 'details url', 'total'],
     ...data.map((item, index) => [
