@@ -9,10 +9,9 @@ import { ThemeContext } from '../../context/theme';
 
 type Props = {
   countOfitems: number;
-  setPokemon: (searchValue: string, offset?: number) => Promise<void>;
 };
 
-export const Pagination = ({ countOfitems, setPokemon }: Props) => {
+export const Pagination = ({ countOfitems }: Props) => {
   const isThemeDark = useContext(ThemeContext);
   const countOfPage = Math.floor(countOfitems / 20);
   const pagesArray = Array.from(
@@ -34,7 +33,7 @@ export const Pagination = ({ countOfitems, setPokemon }: Props) => {
       `/pokemon/list/${page}${params.pokemonName ? `/${params.pokemonName}` : ''}`
     );
 
-    setPokemon('', currentOffset);
+    navigate(currentOffset);
   };
 
   return (

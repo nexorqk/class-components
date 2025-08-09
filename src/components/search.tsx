@@ -1,35 +1,45 @@
-import { useContext, useState, type FormEvent } from 'react';
+import { useContext, useEffect, type FormEvent } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router';
 
-import { useLocation } from 'react-router';
+import { ThemeContext } from '../context/theme';
+import { useSearchLocalStorage } from '../hooks/search-local-storage';
+import { cn } from '../utils/cn';
 import { getNormalizedString } from '../utils/normalize';
 import { Button } from './ui/button';
-import { ThemeContext } from '../context/theme';
-import { cn } from '../utils/cn';
-
-type Props = {
-  initSearchValue: string | undefined;
-  setPokemon: (value: string) => Promise<void>;
-};
 
 const WARNING_TEXT = "Please enter the Pokémon's exact name.";
 export const searchId = 'search-value';
 
-export const Search = ({ initSearchValue, setPokemon }: Props) => {
-  const [searchValue, setSearchValue] = useState(initSearchValue);
-  const location = useLocation();
+export const Search = () => {
+  const [searchValue, setSearchValue] = useSearchLocalStorage();
   const isThemeDark = useContext(ThemeContext);
+  const navigate = useNavigate();
+  const params = useParams();
+  const location = useLocation();
 
   const handleFormSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
 
-    const normalizedValue = getNormalizedString(searchValue || '');
+    if (typeof searchValue === 'string') {
+      const normalizedValue = getNormalizedString(searchValue);
+      setSearchValue(normalizedValue);
 
-    setSearchValue(normalizedValue);
-
-    await setPokemon(normalizedValue);
+      if (normalizedValue === '') {
+        navigate(`/pokemon/list/${params.page || '1'}`);
+      } else {
+        navigate(normalizedValue);
+      }
+    }
   };
 
-  const isDisabled = location.pathname === '/about';
+  useEffect(() => {
+    if (
+      params.pokemonName !== searchValue &&
+      !location.pathname.includes('list')
+    ) {
+      setSearchValue(params.pokemonName || '');
+    }
+  }, []);
 
   return (
     <>
@@ -45,7 +55,6 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
             Search pokemon by name:
           </label>
           <input
-            disabled={isDisabled}
             className={cn(
               'border-2 border-gray-400 rounded-md',
               isThemeDark ? 'text-white' : 'text-slate-900'
@@ -55,7 +64,7 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
             onChange={(event) => setSearchValue(event.target.value)}
           />
         </div>
-        <Button disabled={isDisabled}>Search</Button>
+        <Button>Search</Button>
       </form>
       <p className="text-sm text-amber-600 max-w-[240px]">{WARNING_TEXT}</p>
     </>

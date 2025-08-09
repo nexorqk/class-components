@@ -2,15 +2,20 @@ import { createBrowserRouter } from 'react-router';
 
 import { App } from './app';
 import { NotFound } from './view/not-found';
-import { PokemonList } from './components/pokemon-list';
 import { PokemonCard } from './components/pokemon-card';
 import { MainView } from './view/main-view';
 import { About } from './view/about';
+import { PokemonListItem } from './components/pokemon-list-item';
+import ErrorBoundary from './components/error-boundary';
 
 export const routerConfig = [
   {
     path: '/',
-    Component: App,
+    Element: (
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    ),
     children: [
       {
         path: 'pokemon',
@@ -18,7 +23,7 @@ export const routerConfig = [
         children: [
           {
             path: 'list/:page',
-            Component: PokemonList,
+            Component: PokemonListItem,
             children: [
               {
                 path: ':pokemonName',

@@ -1,21 +1,19 @@
 import { useContext, useEffect, useState } from 'react';
-import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router';
+import { Outlet, useNavigate, useParams } from 'react-router';
 
 import { ThemeContext } from '../context/theme';
-import { getPokemon } from '../service/pokemon';
 import { toggleSelect, unselect } from '../store/slices/selected-pokemons';
 import { useAppDispatch, useAppSelector } from '../store/store';
-import { type Pokemon } from '../types/pokemon';
+import { type PokemonList } from '../types/pokemon';
 import { cn } from '../utils/cn';
-import { type MainData } from '../view/main-view';
 import { Loader } from './ui/loader';
 import { Pagination } from './ui/pagination';
 import { SelectedFlyout } from './selected-flyout';
 import { downloadCSV } from '../utils/download-csv';
+import { API_URL } from '../service/pokemon';
+import { getOffsetByPage } from '../utils/page-counter';
 
-export const PokemonList = () => {
-  const { pokemonData, setPokemon, pokemonError } =
-    useOutletContext<MainData>();
+export const PokemonListItem = () => {
   const navigate = useNavigate();
   const params = useParams();
   const isThemeDark = useContext(ThemeContext);
@@ -23,27 +21,13 @@ export const PokemonList = () => {
   const dispatch = useAppDispatch();
   const selectedPokemons = useAppSelector((store) => store.selectedPokemons);
 
+  const [pokemonData, setPokemonData] = useState<PokemonList | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentPokemonName, setCurrentPokemonName] = useState(
     params.pokemonName || ''
   );
 
-  const [onePokemon, setOnePokemon] = useState<Pokemon>();
-  const [isOneLoading, setIsOneLoading] = useState(false);
   const [isOneItemSelected, setIsOneItemSelected] = useState(false);
-
-  useEffect(() => {
-    const getOnePokemon = async () => {
-      setIsOneLoading(true);
-      const pokemon = await getPokemon(currentPokemonName || 'bulbasaur');
-
-      if ('abilities' in pokemon) {
-        setOnePokemon(pokemon);
-        setIsOneLoading(false);
-      }
-    };
-
-    getOnePokemon();
-  }, [currentPokemonName]);
 
   const handlePokemonClick = (pokemonName: string) => {
     setCurrentPokemonName(pokemonName);
@@ -55,9 +39,20 @@ export const PokemonList = () => {
   };
 
   const handleCheckboxClick = async (name: string, isChecked: boolean) => {
+    const getPokemon = async (name: string) => {
+      try {
+        const response = await fetch(`${API_URL}/pokemon/${name}`);
+
+        return await response.json();
+      } catch (error) {
+        console.error(error);
+      }
+
+      return null;
+    };
     const pokemonData = await getPokemon(name);
 
-    if ('abilities' in pokemonData) {
+    if (pokemonData !== null && 'abilities' in pokemonData) {
       dispatch(
         toggleSelect({
           id: name,
@@ -67,6 +62,35 @@ export const PokemonList = () => {
       );
     }
   };
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(
+          `${API_URL}/pokemon${
+            Number(params.page) && getOffsetByPage(Number(params.page)) > 0
+              ? `?offset=${getOffsetByPage(Number(params.page))}&limit=20`
+              : ''
+          }`
+        );
+
+        const data = await response.json();
+
+        if (data !== undefined) {
+          setPokemonData(data);
+        } else {
+          setPokemonData(null);
+        }
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getData();
+  }, [params.page]);
 
   useEffect(() => {
     if (selectedPokemons.checkedList.length > 0) {
@@ -86,6 +110,8 @@ export const PokemonList = () => {
     downloadCSV(selectedPokemons.checkedList.map((item) => item.data));
   };
 
+  if (isLoading) return <Loader isLoading={isLoading} />;
+
   if (
     pokemonData === undefined ||
     pokemonData === null ||
@@ -96,9 +122,9 @@ export const PokemonList = () => {
     return <h2 className="text-3xl">No Results</h2>;
   }
 
-  if (pokemonError !== null) {
-    return <h2>Fetch data error: {pokemonError}</h2>;
-  }
+  // if (pokemonError !== null) {
+  //   return <h2>Fetch data error: {pokemonError}</h2>;
+  // }
 
   if (pokemonData && 'results' in pokemonData) {
     return (
@@ -140,38 +166,22 @@ export const PokemonList = () => {
             ))}
           </ul>
           <div className="flex items-start">
-            {onePokemon && 'abilities' in onePokemon && (
-              <>
-                <Loader isLoading={isOneLoading} />
-                {!isOneLoading && params.pokemonName !== undefined && (
-                  <div className="flex items-start gap-2">
-                    <Outlet
-                      context={
-                        { pokemonData: onePokemon } satisfies {
-                          pokemonData: Pokemon;
-                        }
-                      }
-                    />
-                    <div
-                      role="button"
-                      aria-label="Close details"
-                      className="cursor-pointer border rounded-3xl transition-all border-pink-300 hover:border-pink-500 text-pink-700 font-bold px-2.5 py-1"
-                      onClick={handleCloseDetail}
-                    >
-                      X
-                    </div>
-                  </div>
-                )}
-              </>
+            {currentPokemonName && (
+              <div className="flex items-start gap-2">
+                <Outlet />
+                <div
+                  role="button"
+                  aria-label="Close details"
+                  className="cursor-pointer border rounded-3xl transition-all border-pink-300 hover:border-pink-500 text-pink-700 font-bold px-2.5 py-1"
+                  onClick={handleCloseDetail}
+                >
+                  X
+                </div>
+              </div>
             )}
           </div>
         </div>
-        {pokemonData && (
-          <Pagination
-            setPokemon={setPokemon}
-            countOfitems={pokemonData.count}
-          />
-        )}
+        {pokemonData && <Pagination countOfitems={pokemonData.count} />}
         {isOneItemSelected && (
           <SelectedFlyout
             handleUnselectClick={handleUnselectClick}

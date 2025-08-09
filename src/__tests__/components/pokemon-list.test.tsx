@@ -8,7 +8,7 @@ import {
 import { MemoryRouter, Route, Routes } from 'react-router';
 
 import { App } from '../../app';
-import { PokemonList as PokemonListComponent } from '../../components/pokemon-list';
+import { PokemonList as PokemonListComponent } from '../../components/pokemon-list-item';
 import type { Pokemon, PokemonList } from '../../types/pokemon';
 import { pokemon, pokemonBulbasaur, pokemonList } from '../mocks/data';
 import { Provider } from 'react-redux';
