@@ -1,21 +1,16 @@
 import { createBrowserRouter } from 'react-router';
 
 import { App } from './app';
-import { NotFound } from './view/not-found';
 import { PokemonCard } from './components/pokemon-card';
-import { MainView } from './view/main-view';
-import { About } from './view/about';
 import { PokemonListItem } from './components/pokemon-list-item';
-import ErrorBoundary from './components/error-boundary';
+import { About } from './view/about';
+import { MainView } from './view/main-view';
+import { NotFound } from './view/not-found';
 
 export const routerConfig = [
   {
     path: '/',
-    Element: (
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    ),
+    Component: App,
     children: [
       {
         path: 'pokemon',

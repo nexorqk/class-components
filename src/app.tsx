@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router';
+import { useEffect, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 
 import { Navigation } from './components/navigation';
 import { ThemeChanger } from './components/theme-changer';
@@ -8,6 +8,14 @@ import { getThemeStorage } from './utils/theme-storage';
 
 export const App = () => {
   const [isThemeDark, setIsThemeDark] = useState(getThemeStorage());
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.pathname === '/') {
+      navigate('/pokemon/list/1');
+    }
+  }, [location, navigate]);
 
   return (
     <ThemeContext value={isThemeDark}>
