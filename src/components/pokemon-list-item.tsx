@@ -2,11 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router';
 
 import { ThemeContext } from '../context/theme';
-import { API_URL, useGetPokemonByPageQuery } from '../service/pokemon';
-import { toggleSelect, unselect } from '../store/slices/selected-pokemons';
+import { useGetPokemonByPageQuery } from '../service/pokemon';
+import { unselect } from '../store/slices/selected-pokemons';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { cn } from '../utils/cn';
 import { downloadCSV } from '../utils/download-csv';
+import { PokemonCheckbox } from './pokemon-checkbox';
 import { SelectedFlyout } from './selected-flyout';
 import { Loader } from './ui/loader';
 import { Pagination } from './ui/pagination';
@@ -19,7 +20,7 @@ export const PokemonListItem = () => {
     data: pokemonData,
     isFetching,
     error,
-  } = useGetPokemonByPageQuery(params.page || ' 1');
+  } = useGetPokemonByPageQuery(params.page || '1');
 
   const dispatch = useAppDispatch();
   const selectedPokemons = useAppSelector((store) => store.selectedPokemons);
@@ -36,32 +37,8 @@ export const PokemonListItem = () => {
   };
 
   const handleCloseDetail = () => {
+    setCurrentPokemonName('');
     navigate('');
-  };
-
-  const handleCheckboxClick = async (name: string, isChecked: boolean) => {
-    const getPokemon = async (name: string) => {
-      try {
-        const response = await fetch(`${API_URL}/pokemon/${name}`);
-
-        return await response.json();
-      } catch (error) {
-        console.error(error);
-      }
-
-      return null;
-    };
-    const pokemonData = await getPokemon(name);
-
-    if (pokemonData !== null && 'abilities' in pokemonData) {
-      dispatch(
-        toggleSelect({
-          id: name,
-          isChecked,
-          data: pokemonData,
-        })
-      );
-    }
   };
 
   useEffect(() => {
@@ -118,20 +95,7 @@ export const PokemonListItem = () => {
               key={item.name}
               className="flex gap-2.5 items-center hover:[&>p]:underline"
             >
-              <input
-                id={item.name}
-                name={item.name}
-                type="checkbox"
-                checked={
-                  selectedPokemons.checkedList.find(
-                    (checkedItem) => checkedItem.name === item.name
-                  )?.isChecked || false
-                }
-                onChange={(event) =>
-                  handleCheckboxClick(item.name, event.target.checked)
-                }
-                className="w-4 h-4 cursor-pointer"
-              />
+              <PokemonCheckbox name={item.name} />
               <p
                 className="cursor-pointer text-xl text-pink-600 decoration-wavy decoration-3"
                 onClick={() => handlePokemonClick(item.name)}

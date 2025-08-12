@@ -1,18 +1,13 @@
 import { useNavigate, useParams } from 'react-router';
+
 import { cn } from '../../utils/cn';
-import {
-  getCurrentPagesArray,
-  getOffsetByPage,
-} from '../../utils/page-counter';
-import { useContext } from 'react';
-import { ThemeContext } from '../../context/theme';
+import { getCurrentPagesArray } from '../../utils/page-counter';
 
 type Props = {
   countOfitems: number;
 };
 
 export const Pagination = ({ countOfitems }: Props) => {
-  const isThemeDark = useContext(ThemeContext);
   const countOfPage = Math.floor(countOfitems / 20);
   const pagesArray = Array.from(
     { length: countOfPage },
@@ -27,43 +22,22 @@ export const Pagination = ({ countOfitems }: Props) => {
   const currentPagesArray = getCurrentPagesArray(pagesArray, currentPage);
 
   const handlePageClick = (page: number) => {
-    const currentOffset = getOffsetByPage(page);
-
     navigate(
       `/pokemon/list/${page}${params.pokemonName ? `/${params.pokemonName}` : ''}`
     );
-
-    navigate(currentOffset);
   };
 
   return (
-    <div
-      className={cn(
-        'mt-6 border-t',
-        isThemeDark ? 'border-t-white' : 'border-t-slate-900'
-      )}
-    >
-      <div className="flex gap-3">
+    <div>
+      <ul className="flex gap-3 mt-3">
         {currentPagesArray[1] > 10
-          ? currentPagesArray.map((number, index) => (
-              <div key={number} className="relative">
-                {(index === 0 || index === 9) && (
-                  <div
-                    className={cn(
-                      'absolute',
-                      index === 0 ? '-right-3' : '-left-3'
-                    )}
-                  >
-                    ...
-                  </div>
-                )}
-                <Number
-                  onClick={handlePageClick}
-                  key={number}
-                  number={number}
-                  currentPage={currentPage}
-                />
-              </div>
+          ? currentPagesArray.map((number) => (
+              <Number
+                onClick={handlePageClick}
+                key={number}
+                number={number}
+                currentPage={currentPage}
+              />
             ))
           : currentPagesArray.map((number) => (
               <Number
@@ -73,7 +47,7 @@ export const Pagination = ({ countOfitems }: Props) => {
                 currentPage={currentPage}
               />
             ))}
-      </div>
+      </ul>
     </div>
   );
 };
@@ -88,15 +62,15 @@ const Number = ({
   onClick: (currentPage: number) => void;
 }) => {
   return (
-    <p
+    <li
       className={cn(
         number === currentPage ? 'text-amber-600' : 'text-blue-500',
-        'cursor-pointer px-4 py-1',
+        'cursor-pointer px-4 py-1 border rounded-2xl',
         number !== currentPage && 'hover:text-blue-800 transition-colors'
       )}
       onClick={() => onClick(number)}
     >
       {number}
-    </p>
+    </li>
   );
 };
