@@ -18,17 +18,15 @@ export const Pagination = ({ countOfitems, setPokemon }: Props) => {
   );
 
   const navigate = useNavigate();
-  const params = useParams();
+  const { pokemonName, page } = useParams();
 
-  const currentPage = parseInt(params['page'] || '1');
+  const currentPage = parseInt(page || '1');
 
   const currentPagesArray = getCurrentPagesArray(pagesArray, currentPage);
 
   const handlePageClick = (page: number) => {
     const currentOffset = getOffsetByPage(page);
-    navigate(
-      `/pokemon/list/${page}${params.pokemonName && `/${params.pokemonName}`}`
-    );
+    navigate(`/pokemon/list/${page}${pokemonName ? `/${pokemonName}` : ''}`);
 
     setPokemon('', currentOffset);
   };

@@ -1,9 +1,8 @@
 import { useOutletContext } from 'react-router';
-import { type MainData } from '../view/main-view';
+import { type PokemonDataContext } from '../view/main-view';
 
 export const PokemonCard = () => {
-  const { pokemonData: data } =
-    useOutletContext<Pick<MainData, 'pokemonData'>>();
+  const { pokemonData: data } = useOutletContext<PokemonDataContext>();
 
   if (data === null || data === undefined) return <h2>No data</h2>;
 

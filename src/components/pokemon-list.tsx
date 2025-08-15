@@ -7,6 +7,10 @@ import { type MainData } from '../view/main-view';
 import { Loader } from './ui/loader';
 import { Pagination } from './ui/pagination';
 
+type PokemonContext = {
+  pokemonData: Pokemon;
+};
+
 export const PokemonList = () => {
   const { pokemonData, setPokemon, pokemonError } =
     useOutletContext<MainData>();
@@ -44,13 +48,14 @@ export const PokemonList = () => {
     navigate('');
   };
 
-  if (
+  const isValidPokemonData =
     pokemonData === undefined ||
     pokemonData === null ||
     ('results' in pokemonData &&
       pokemonData.results &&
-      pokemonData.results.length === 0)
-  ) {
+      pokemonData.results.length === 0);
+
+  if (isValidPokemonData) {
     return <h2 className="text-3xl">No Results</h2>;
   }
 
@@ -80,9 +85,7 @@ export const PokemonList = () => {
                   <div className="flex items-start gap-2">
                     <Outlet
                       context={
-                        { pokemonData: onePokemon } satisfies {
-                          pokemonData: Pokemon;
-                        }
+                        { pokemonData: onePokemon } satisfies PokemonContext
                       }
                     />
                     <div

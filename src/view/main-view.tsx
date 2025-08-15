@@ -10,6 +10,8 @@ export type MainData = {
   pokemonError: string | null;
 };
 
+export type PokemonDataContext = Omit<MainData, 'pokemonDataIsLoading'>;
+
 export const MainView = () => {
   const { pokemonData, setPokemon, pokemonDataIsLoading, pokemonError } =
     useOutletContext<MainData>();
@@ -25,7 +27,7 @@ export const MainView = () => {
               pokemonData,
               setPokemon,
               pokemonError,
-            } satisfies Omit<MainData, 'pokemonDataIsLoading'>
+            } satisfies PokemonDataContext
           }
         />
       )}

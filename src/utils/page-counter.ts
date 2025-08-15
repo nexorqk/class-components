@@ -1,6 +1,3 @@
-export const OFFSET_API = 'offset=';
-export const LIMIT_API = '&limit';
-
 export const getOffsetByPage = (page: number) => page * 20 - 20;
 
 export const getCurrentPagesArray = (array: number[], currentPage: number) => {
