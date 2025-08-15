@@ -27,8 +27,8 @@ export default class MainView extends Component<Props> {
           'results' in this.props.pokemonData && (
             <ul className="text-2xl">
               Pokemon list:
-              {this.props.pokemonData.results.map((item) => (
-                <li key={item.name || `no name ${crypto.randomUUID()}`}>
+              {this.props.pokemonData.results.map((item, index) => (
+                <li key={item.name || `${index}-pokemon`}>
                   <h3 className="text-xl">- {item.name || 'no name'}</h3>
                 </li>
               ))}
