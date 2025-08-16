@@ -1,21 +1,24 @@
+'use client';
+
 import { useEffect, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router';
 
 import { Navigation } from './components/navigation';
 import { ThemeChanger } from './components/theme-changer';
 import { ThemeContext } from './context/theme';
 import { getThemeStorage } from './utils/theme-storage';
 
-export const App = () => {
+const App = () => {
   const [isThemeDark, setIsThemeDark] = useState(getThemeStorage());
-  const location = useLocation();
-  const navigate = useNavigate();
+  // const location = useLocation();
+  // const navigate = useNavigate();
 
   useEffect(() => {
-    if (location.pathname === '/') {
-      navigate('/pokemon/list/1');
-    }
-  }, [location, navigate]);
+    // if (location.pathname === '/') {
+    // navigate('/pokemon/list/1');
+    // }
+
+    console.log('navigate');
+  }, []);
 
   return (
     <ThemeContext value={isThemeDark}>
@@ -26,7 +29,9 @@ export const App = () => {
         />
         <Navigation />
       </header>
-      <Outlet />
+      {/* <Outlet /> */}
     </ThemeContext>
   );
 };
+
+export default App;

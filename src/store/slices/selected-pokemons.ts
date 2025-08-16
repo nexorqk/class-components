@@ -2,15 +2,17 @@ import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import type { Pokemon } from '../../types/pokemon';
 
+export type CheckedList = {
+  name: string;
+  isChecked: boolean;
+  data: Pokemon;
+}[];
+
 export interface SelectedPokemonsState {
-  checkedList: {
-    name: string;
-    isChecked: boolean;
-    data: Pokemon;
-  }[];
+  checkedList: CheckedList;
 }
 
-const initialState: SelectedPokemonsState = {
+export const initialState: SelectedPokemonsState = {
   checkedList: [],
 };
 

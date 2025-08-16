@@ -25,3 +25,6 @@ dist-ssr
 
 # Test coverage folder
 coverage
+
+.next
+next-env.d.ts
