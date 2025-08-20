@@ -1,28 +1,25 @@
-import { useEffect } from 'react';
+'use client';
 
 import { cn } from '../utils/cn';
-import { setThemeStorage } from '../utils/theme-storage';
+import { useEffect, useState } from 'react';
+import { getThemeIsDarkFromLS, setThemeStorage } from '../utils/theme-storage';
 
-export const ThemeChanger = ({
-  isThemeDark,
-  setIsThemeDark,
-}: {
-  isThemeDark: boolean;
-  setIsThemeDark: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  useEffect(() => {
-    if (isThemeDark) {
-      window.document.body.classList.add('bg-slate-900');
-    } else {
-      window.document.body.classList.remove('bg-slate-900');
-    }
-  }, [isThemeDark]);
+export const ThemeChanger = () => {
+  const [isThemeDark, setIsThemeDark] = useState(false);
 
   const handleSetTheme = (isDark: boolean) => {
     setIsThemeDark(isDark);
 
     setThemeStorage(isDark);
   };
+
+  useEffect(() => {
+    if (getThemeIsDarkFromLS()) {
+      setIsThemeDark(true);
+      setThemeStorage(true);
+    }
+  }, []);
+
   return (
     <div
       className={cn(

@@ -1,10 +1,11 @@
-import { useContext } from 'react';
+'use client';
 
-import { ThemeContext } from '../context/theme';
 import Link from 'next/link';
 
+import { useThemeContext } from './theme-provider';
+
 export const Navigation = () => {
-  const isThemeDark = useContext(ThemeContext);
+  const isThemeDark = useThemeContext();
 
   return (
     <div className="space-x-3 pb-5">

@@ -15,7 +15,6 @@ export const PokemonCheckbox = ({ name }: { name: string }) => {
   }, [isChecked, trigger, name]);
 
   useEffect(() => {
-    console.log(data);
     if (data !== undefined) {
       dispatch(toggleSelect({ id: name, isChecked, data }));
     }

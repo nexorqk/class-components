@@ -1,10 +1,10 @@
-import { useContext } from 'react';
+'use client';
 
-import { ThemeContext } from '../context/theme';
-import { cn } from '../utils/cn';
+import { useThemeContext } from '@/components/theme-provider';
+import { cn } from '@/utils/cn';
 
-export const About = () => {
-  const isThemeDark = useContext(ThemeContext);
+const AboutPage = () => {
+  const isThemeDark = useThemeContext();
 
   return (
     <div
@@ -38,3 +38,5 @@ export const About = () => {
     </div>
   );
 };
+
+export default AboutPage;

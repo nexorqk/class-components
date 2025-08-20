@@ -1,21 +1,23 @@
-import { useContext, useEffect, type FormEvent } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router';
+'use client';
 
-import { ThemeContext } from '../context/theme';
-import { useSearchLocalStorage } from '../hooks/search-local-storage';
+import { useEffect, useState, type FormEvent } from 'react';
+import { useParams, usePathname, useRouter } from 'next/navigation';
+
 import { cn } from '../utils/cn';
 import { getNormalizedString } from '../utils/normalize';
 import { Button } from './ui/button';
+import { useThemeContext } from '../components/theme-provider';
 
 const WARNING_TEXT = "Please enter the Pokémon's exact name.";
 export const searchId = 'search-value';
 
 export const Search = () => {
-  const [searchValue, setSearchValue] = useSearchLocalStorage();
-  const isThemeDark = useContext(ThemeContext);
-  const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState('');
+  const isThemeDark = useThemeContext();
+
+  const router = useRouter();
   const params = useParams();
-  const location = useLocation();
+  const pathname = usePathname();
 
   const handleFormSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
@@ -25,19 +27,20 @@ export const Search = () => {
       setSearchValue(normalizedValue);
 
       if (normalizedValue === '') {
-        navigate(`/pokemon/list/${params.page || '1'}`);
+        router.push(`/pokemon/list/${params.page || '1'}`);
       } else {
-        navigate(normalizedValue);
+        router.push(normalizedValue);
       }
     }
   };
 
   useEffect(() => {
     if (
-      params.pokemonName !== searchValue &&
-      !location.pathname.includes('list')
+      params.name !== searchValue &&
+      !pathname.includes('list') &&
+      typeof params.name === 'string'
     ) {
-      setSearchValue(params.pokemonName || '');
+      setSearchValue(params.name || '');
     }
   }, []);
 
@@ -59,6 +62,7 @@ export const Search = () => {
               'border-2 border-gray-400 rounded-md',
               isThemeDark ? 'text-white' : 'text-slate-900'
             )}
+            type="text"
             id={searchId}
             value={searchValue}
             onChange={(event) => setSearchValue(event.target.value)}

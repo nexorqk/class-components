@@ -1,18 +1,21 @@
-import { useContext } from 'react';
-import { useParams } from 'react-router';
+'use client';
 
-import { ThemeContext } from '../context/theme';
+import { useParams } from 'next/navigation';
+
 import { useGetPokemonByNameQuery } from '../service/pokemon';
 import { cn } from '../utils/cn';
 import { Loader } from './ui/loader';
+import { useThemeContext } from '../components/theme-provider';
+import { getParamsNameValue } from '@/utils/get-params-value';
 
 export const PokemonCard = () => {
   const params = useParams();
+
   const { data, isLoading, isFetching, error } = useGetPokemonByNameQuery(
-    params.pokemonName || ''
+    getParamsNameValue(params.name)
   );
 
-  const isThemeDark = useContext(ThemeContext);
+  const isThemeDark = useThemeContext();
 
   if (isLoading) return <Loader isLoading={isLoading} />;
   if (isFetching) return <Loader isLoading={isFetching} />;

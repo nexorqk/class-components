@@ -1,7 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
-import { Outlet, useNavigate, useParams } from 'react-router';
+'use client';
 
-import { ThemeContext } from '../context/theme';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+import { getParamsPageValue } from '@/utils/get-params-value';
 import { useGetPokemonByPageQuery } from '../service/pokemon';
 import { unselect } from '../store/slices/selected-pokemons';
 import { useAppDispatch, useAppSelector } from '../store/store';
@@ -9,18 +11,21 @@ import { cn } from '../utils/cn';
 import { downloadCSV } from '../utils/download-csv';
 import { PokemonCheckbox } from './pokemon-checkbox';
 import { SelectedFlyout } from './selected-flyout';
+import { useThemeContext } from './theme-provider';
 import { Loader } from './ui/loader';
 import { Pagination } from './ui/pagination';
 
 export const PokemonListItem = () => {
-  const navigate = useNavigate();
+  const isThemeDark = useThemeContext();
+
+  const router = useRouter();
   const params = useParams();
-  const isThemeDark = useContext(ThemeContext);
+
   const {
     data: pokemonData,
     isFetching,
     error,
-  } = useGetPokemonByPageQuery(params.page || '1');
+  } = useGetPokemonByPageQuery(getParamsPageValue(params.page).toString());
 
   const dispatch = useAppDispatch();
   const selectedPokemons = useAppSelector((store) => store.selectedPokemons);
@@ -33,12 +38,12 @@ export const PokemonListItem = () => {
 
   const handlePokemonClick = (pokemonName: string) => {
     setCurrentPokemonName(pokemonName);
-    navigate(pokemonName);
+    router.push(pokemonName);
   };
 
   const handleCloseDetail = () => {
     setCurrentPokemonName('');
-    navigate('');
+    router.push('');
   };
 
   useEffect(() => {
@@ -108,7 +113,7 @@ export const PokemonListItem = () => {
         <div className="flex items-start">
           {currentPokemonName && (
             <div className="flex items-start gap-2">
-              <Outlet />
+              {/* {children} */}
               <div
                 role="button"
                 aria-label="Close details"

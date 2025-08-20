@@ -6,9 +6,10 @@ import react from 'eslint-plugin-react';
 import tseslint from 'typescript-eslint';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 import reactCompiler from 'eslint-plugin-react-compiler';
+import nextPlugin from '@next/eslint-plugin-next';
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage'] },
+  { ignores: ['dist', 'coverage', '.next'] },
   {
     extends: [
       js.configs.recommended,
@@ -25,6 +26,7 @@ export default tseslint.config(
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       'react-compiler': reactCompiler,
+      '@next/next': nextPlugin,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -35,6 +37,7 @@ export default tseslint.config(
       'react-compiler/react-compiler': 'error',
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
+      ...nextPlugin.configs.recommended.rules,
     },
     settings: {
       react: {

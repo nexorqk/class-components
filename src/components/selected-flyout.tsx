@@ -1,7 +1,6 @@
-import { useContext } from 'react';
 import { Button } from './ui/button';
-import { ThemeContext } from '../context/theme';
 import { cn } from '../utils/cn';
+import { useThemeContext } from './theme-provider';
 
 export const SelectedFlyout = ({
   handleDownloadClick,
@@ -12,7 +11,7 @@ export const SelectedFlyout = ({
   handleDownloadClick: () => void;
   countOfItems: number;
 }) => {
-  const isThemeDark = useContext(ThemeContext);
+  const isThemeDark = useThemeContext();
 
   return (
     <div className="flex mt-4">

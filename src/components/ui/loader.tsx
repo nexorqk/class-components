@@ -1,10 +1,8 @@
-import { useContext } from 'react';
-
-import { ThemeContext } from '../../context/theme';
 import { cn } from '../../utils/cn';
+import { useThemeContext } from '../theme-provider';
 
 export const Loader = ({ isLoading }: { isLoading?: boolean }) => {
-  const isThemeDark = useContext(ThemeContext);
+  const isThemeDark = useThemeContext();
 
   if (isLoading === false) return null;
 

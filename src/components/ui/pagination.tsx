@@ -1,7 +1,8 @@
-import { useNavigate, useParams } from 'react-router';
+import { useParams, useRouter } from 'next/navigation';
 
 import { cn } from '../../utils/cn';
 import { getCurrentPagesArray } from '../../utils/page-counter';
+import { getParamsPageValue } from '@/utils/get-params-value';
 
 type Props = {
   countOfitems: number;
@@ -14,15 +15,15 @@ export const Pagination = ({ countOfitems }: Props) => {
     (_, index) => 1 + index
   );
 
-  const navigate = useNavigate();
+  const router = useRouter();
   const params = useParams();
 
-  const currentPage = parseInt(params['page'] || '1');
+  const currentPage = getParamsPageValue(params.page);
 
   const currentPagesArray = getCurrentPagesArray(pagesArray, currentPage);
 
   const handlePageClick = (page: number) => {
-    navigate(
+    router.push(
       `/pokemon/list/${page}${params.pokemonName ? `/${params.pokemonName}` : ''}`
     );
   };

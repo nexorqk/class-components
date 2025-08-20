@@ -1,10 +1,12 @@
-export const getThemeStorage = () => {
+export const getThemeIsDarkFromLS = () => {
   let theme = false;
 
   try {
-    const value = window.localStorage.getItem('theme-value');
+    const value = localStorage.getItem('theme-value');
 
-    theme = value === 'dark';
+    if (typeof value === 'string') {
+      theme = value === 'dark';
+    }
   } catch (error) {
     console.error(error);
   }
@@ -13,4 +15,4 @@ export const getThemeStorage = () => {
 };
 
 export const setThemeStorage = (isDark: boolean) =>
-  window.localStorage.setItem('theme-value', isDark ? 'dark' : 'light');
+  localStorage.setItem('theme-value', isDark ? 'dark' : 'light');

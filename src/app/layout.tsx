@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
 
+import StoreProvider from '../components/store-provider';
+import { ThemeChanger } from '../components/theme-changer';
+import { Navigation } from '../components/navigation';
+
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -13,13 +17,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-      </head>
-      <body>
-        <div id="root">{children}</div>
-      </body>
-    </html>
+    <StoreProvider>
+      <html lang="en">
+        <body>
+          <div id="root">
+            <header className="relative mx-auto px-2 py-4 max-w-4xl space-y-1">
+              <ThemeChanger />
+              <Navigation />
+            </header>
+            {children}
+          </div>
+        </body>
+      </html>
+    </StoreProvider>
   );
 }
