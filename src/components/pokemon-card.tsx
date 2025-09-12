@@ -1,15 +1,15 @@
 import { useOutletContext } from 'react-router';
-import { useContext } from 'react';
 
-import { ThemeContext } from '../context/theme';
 import { type MainData } from '../view/main-view';
 import { cn } from '../utils/cn';
+import { useTheme } from '../hooks/theme';
+import { themeVariants } from '../utils/constants';
 
 export const PokemonCard = () => {
+  const { themeValue } = useTheme();
+
   const { pokemonData: data } =
     useOutletContext<Pick<MainData, 'pokemonData'>>();
-
-  const isThemeDark = useContext(ThemeContext);
 
   if (data === null || data === undefined) return <h2>No data</h2>;
 
@@ -20,7 +20,7 @@ export const PokemonCard = () => {
       <div
         className={cn(
           'p-4 border space-y-4',
-          isThemeDark ? 'text-white' : 'text-slate-900'
+          themeValue === themeVariants.DARK ? 'text-white' : 'text-slate-900'
         )}
       >
         <h2>Name: {name}</h2>

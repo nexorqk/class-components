@@ -1,7 +1,7 @@
-import { useContext } from 'react';
 import { Button } from './ui/button';
-import { ThemeContext } from '../context/theme';
 import { cn } from '../utils/cn';
+import { useTheme } from '../hooks/theme';
+import { themeVariants } from '../utils/constants';
 
 export const SelectedFlyout = ({
   handleDownloadClick,
@@ -12,14 +12,14 @@ export const SelectedFlyout = ({
   handleDownloadClick: () => void;
   countOfItems: number;
 }) => {
-  const isThemeDark = useContext(ThemeContext);
+  const { themeValue } = useTheme();
 
   return (
     <div className="flex mt-4">
       <div
         className={cn(
           'flex flex-col gap-3 border border-solid p-3 rounded-2xl',
-          isThemeDark ? 'text-white' : 'text-slate-900'
+          themeValue === themeVariants.DARK ? 'text-white' : 'text-slate-900'
         )}
       >
         <p>{`${countOfItems} ${countOfItems > 1 ? 'items' : 'item'} ${countOfItems > 1 ? 'are selected' : 'is select'}`}</p>

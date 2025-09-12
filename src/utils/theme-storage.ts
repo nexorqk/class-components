@@ -1,10 +1,15 @@
+import { themeVariants } from './constants';
+
 export const getThemeStorage = () => {
-  let theme = false;
+  let theme = null;
 
   try {
     const value = window.localStorage.getItem('theme-value');
 
-    theme = value === 'dark';
+    theme =
+      JSON.stringify(value) === themeVariants.DARK
+        ? themeVariants.DARK
+        : themeVariants.LIGHT;
   } catch (error) {
     console.error(error);
   }
@@ -12,5 +17,8 @@ export const getThemeStorage = () => {
   return theme;
 };
 
-export const setThemeStorage = (isDark: boolean) =>
-  window.localStorage.setItem('theme-value', isDark ? 'dark' : 'light');
+export const setThemeStorage = (themeValue: string | null) =>
+  window.localStorage.setItem(
+    'theme-value',
+    themeValue === themeVariants.DARK ? themeVariants.DARK : themeVariants.LIGHT
+  );

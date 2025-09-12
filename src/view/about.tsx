@@ -1,16 +1,17 @@
-import { useContext } from 'react';
-
-import { ThemeContext } from '../context/theme';
+import { useTheme } from '../hooks/theme';
 import { cn } from '../utils/cn';
+import { themeVariants } from '../utils/constants';
 
 export const About = () => {
-  const isThemeDark = useContext(ThemeContext);
+  const { themeValue } = useTheme();
 
   return (
     <div
       className={cn(
         'max-w-4xl mx-auto p-4 flex flex-col gap-4',
-        isThemeDark ? 'text-emerald-400' : 'text-slate-900'
+        themeValue === themeVariants.DARK
+          ? 'text-emerald-400'
+          : 'text-slate-900'
       )}
     >
       <h2 className="text-2xl">About:</h2>

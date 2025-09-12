@@ -1,24 +1,25 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useNavigate, useOutletContext, useParams } from 'react-router';
 
-import { ThemeContext } from '../context/theme';
+import { useTheme } from '../hooks/theme';
 import { getPokemon } from '../service/pokemon';
 import { toggleSelect, unselect } from '../store/slices/selected-pokemons';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { type Pokemon } from '../types/pokemon';
 import { cn } from '../utils/cn';
+import { downloadCSV } from '../utils/download-csv';
 import { type MainData } from '../view/main-view';
+import { SelectedFlyout } from './selected-flyout';
 import { Loader } from './ui/loader';
 import { Pagination } from './ui/pagination';
-import { SelectedFlyout } from './selected-flyout';
-import { downloadCSV } from '../utils/download-csv';
+import { themeVariants } from '../utils/constants';
 
 export const PokemonList = () => {
   const { pokemonData, setPokemon, pokemonError } =
     useOutletContext<MainData>();
   const navigate = useNavigate();
   const params = useParams();
-  const isThemeDark = useContext(ThemeContext);
+  const { themeValue } = useTheme();
 
   const dispatch = useAppDispatch();
   const selectedPokemons = useAppSelector((store) => store.selectedPokemons);
@@ -107,7 +108,9 @@ export const PokemonList = () => {
           <ul
             className={cn(
               'text-2xl',
-              isThemeDark ? 'text-white' : 'text-slate-900'
+              themeValue === themeVariants.DARK
+                ? 'text-white'
+                : 'text-slate-900'
             )}
           >
             Pokemon list:

@@ -1,10 +1,11 @@
-import { useContext, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 
 import { useLocation } from 'react-router';
 import { getNormalizedString } from '../utils/normalize';
 import { Button } from './ui/button';
-import { ThemeContext } from '../context/theme';
 import { cn } from '../utils/cn';
+import { useTheme } from '../hooks/theme';
+import { themeVariants } from '../utils/constants';
 
 type Props = {
   initSearchValue: string | undefined;
@@ -15,9 +16,9 @@ const WARNING_TEXT = "Please enter the Pokémon's exact name.";
 export const searchId = 'search-value';
 
 export const Search = ({ initSearchValue, setPokemon }: Props) => {
+  const { themeValue } = useTheme();
   const [searchValue, setSearchValue] = useState(initSearchValue);
   const location = useLocation();
-  const isThemeDark = useContext(ThemeContext);
 
   const handleFormSubmit = async (event: FormEvent): Promise<void> => {
     event.preventDefault();
@@ -39,7 +40,9 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
             htmlFor={searchId}
             className={cn(
               'text-xl font-bold',
-              isThemeDark ? 'text-white' : 'text-slate-900'
+              themeValue === themeVariants.DARK
+                ? 'text-white'
+                : 'text-slate-900'
             )}
           >
             Search pokemon by name:
@@ -48,7 +51,9 @@ export const Search = ({ initSearchValue, setPokemon }: Props) => {
             disabled={isDisabled}
             className={cn(
               'border-2 border-gray-400 rounded-md',
-              isThemeDark ? 'text-white' : 'text-slate-900'
+              themeValue === themeVariants.DARK
+                ? 'text-white'
+                : 'text-slate-900'
             )}
             id={searchId}
             value={searchValue}

@@ -1,11 +1,11 @@
-import { useContext } from 'react';
 import { NavLink } from 'react-router';
 
-import { ThemeContext } from '../context/theme';
+import { useTheme } from '../hooks/theme';
 import { cn } from '../utils/cn';
+import { themeVariants } from '../utils/constants';
 
 export const Navigation = () => {
-  const isThemeDark = useContext(ThemeContext);
+  const { themeValue } = useTheme();
 
   return (
     <div className="space-x-3 pb-5">
@@ -13,7 +13,7 @@ export const Navigation = () => {
         to="/pokemon/list/1"
         className={({ isActive, isPending }) =>
           cn(
-            isThemeDark ? 'text-white' : 'text-slate-900',
+            themeValue === themeVariants.DARK ? 'text-white' : 'text-slate-900',
             isPending && 'text-amber-200',
             isActive && 'text-blue-400',
             'text-xl hover:text-blue-700'
@@ -26,7 +26,7 @@ export const Navigation = () => {
         to="/about"
         className={({ isActive, isPending }) =>
           cn(
-            isThemeDark ? 'text-white' : 'text-slate-900',
+            themeValue === themeVariants.DARK ? 'text-white' : 'text-slate-900',
             isPending && 'text-amber-200',
             isActive && 'text-blue-400',
             'text-xl hover:text-blue-700'

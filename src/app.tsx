@@ -7,12 +7,9 @@ import { useSearchLocalStorage } from './hooks/search-local-storage';
 import { getPokemon } from './service/pokemon';
 import type { Pokemon, PokemonList } from './types/pokemon';
 import type { MainData } from './view/main-view';
-import { ThemeContext } from './context/theme';
-import { getThemeStorage, setThemeStorage } from './utils/theme-storage';
-import { cn } from './utils/cn';
+import { ThemeToggler } from './components/theme-toggler';
 
 export const App = () => {
-  const [isThemeDark, setIsThemeDark] = useState(getThemeStorage());
   const [search, setSearch] = useSearchLocalStorage();
   const [pokemonItems, setPokemonItems] = useState<
     Pokemon | PokemonList | null
@@ -59,44 +56,12 @@ export const App = () => {
     }
   }, [search, setPokemon, navigate]);
 
-  const handleSetTheme = (isDark: boolean) => {
-    setIsThemeDark(isDark);
-
-    setThemeStorage(isDark);
-  };
-
-  useEffect(() => {
-    if (isThemeDark) {
-      window.document.body.classList.add('bg-slate-900');
-    } else {
-      window.document.body.classList.remove('bg-slate-900');
-    }
-  }, [isThemeDark]);
-
   return (
-    <ThemeContext value={isThemeDark}>
+    <>
       <header className="relative mx-auto px-2 py-4 max-w-4xl space-y-1">
-        <div
-          className={cn(
-            'absolute right-2 top-2 flex gap-2 text-xl',
-            isThemeDark ? 'text-white' : 'text-slate-900/70'
-          )}
-        >
-          <button
-            className={cn('cursor-pointer', !isThemeDark && 'text-purple-900')}
-            onClick={() => handleSetTheme(false)}
-          >
-            Light
-          </button>
-          <button
-            className={cn('cursor-pointer', isThemeDark && 'text-purple-400')}
-            onClick={() => handleSetTheme(true)}
-          >
-            Dark
-          </button>
-        </div>
         <Navigation />
         <Search initSearchValue={search} setPokemon={setPokemon} />
+        <ThemeToggler />
       </header>
       <Outlet
         context={
@@ -108,6 +73,6 @@ export const App = () => {
           } satisfies MainData
         }
       />
-    </ThemeContext>
+    </>
   );
 };
