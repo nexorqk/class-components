@@ -7,9 +7,7 @@ export const getThemeStorage = () => {
     const value = window.localStorage.getItem('theme-value');
 
     theme =
-      JSON.stringify(value) === themeVariants.DARK
-        ? themeVariants.DARK
-        : themeVariants.LIGHT;
+      value === themeVariants.DARK ? themeVariants.DARK : themeVariants.LIGHT;
   } catch (error) {
     console.error(error);
   }
