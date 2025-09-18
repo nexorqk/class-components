@@ -1,5 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+
+import { ThemeProvider } from '../../components/theme-provider';
 import { MainView } from '../../view/main-view';
 import { pokemon } from '../mocks/data';
 
@@ -23,7 +25,9 @@ describe('MainView', () => {
   const renderRouter = () =>
     render(
       <MemoryRouter>
-        <MainView />
+        <ThemeProvider>
+          <MainView />
+        </ThemeProvider>
       </MemoryRouter>
     );
 

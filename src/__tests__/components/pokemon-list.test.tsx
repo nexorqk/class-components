@@ -14,6 +14,7 @@ import { pokemon, pokemonBulbasaur, pokemonList } from '../mocks/data';
 import { Provider } from 'react-redux';
 import { rootReducer, setupStore, type AppStore } from '../../store/store';
 import type { PropsWithChildren } from 'react';
+import { ThemeProvider } from '../../components/theme-provider';
 
 let pokemonData: PokemonList | Pokemon | null = pokemon;
 let pokemonError: null | string = null;
@@ -35,7 +36,9 @@ function renderWithProviders(
   } = extendedRenderOptions;
 
   const Wrapper = ({ children }: PropsWithChildren) => (
-    <Provider store={store}>{children}</Provider>
+    <ThemeProvider>
+      <Provider store={store}>{children}</Provider>
+    </ThemeProvider>
   );
 
   return {

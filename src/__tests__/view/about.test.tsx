@@ -1,9 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { About } from '../../view/about';
+import { ThemeProvider } from '../../components/theme-provider';
 
 describe('About', () => {
   beforeEach(() => {
-    render(<About />);
+    render(
+      <ThemeProvider>
+        <About />
+      </ThemeProvider>
+    );
   });
 
   it('Renders about content on component render', () => {

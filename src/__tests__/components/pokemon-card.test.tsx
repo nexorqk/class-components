@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { PokemonCard } from '../../components/pokemon-card';
 import { pokemon } from '../mocks/data';
 import type { Pokemon } from '../../types/pokemon';
+import { ThemeProvider } from '../../components/theme-provider';
 
 let pokemonData: Pokemon | null = pokemon;
 
@@ -23,7 +24,11 @@ describe('PokemonCard', () => {
   });
 
   it('Displays item name and description correctly', () => {
-    render(<PokemonCard />);
+    render(
+      <ThemeProvider>
+        <PokemonCard />
+      </ThemeProvider>
+    );
 
     expect(screen.getByText(/name:/i)).toHaveTextContent(pokemon.name);
     expect(screen.getByText(/weight:/i)).toHaveTextContent(
@@ -40,7 +45,11 @@ describe('PokemonCard', () => {
   it('Handles missing props gracefully', () => {
     pokemonData = null;
 
-    render(<PokemonCard />);
+    render(
+      <ThemeProvider>
+        <PokemonCard />
+      </ThemeProvider>
+    );
 
     expect(screen.getByRole('heading')).toHaveTextContent('No data');
   });

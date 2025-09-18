@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { Search, searchId } from '../../components/search';
 import { getNormalizedString } from '../../utils/normalize';
 import { MemoryRouter } from 'react-router';
+import { ThemeProvider } from '../../components/theme-provider';
 
 const LS = window.localStorage;
 
@@ -17,10 +18,12 @@ describe('Search', () => {
   ) => {
     render(
       <MemoryRouter>
-        <Search
-          initSearchValue={searchValue}
-          setPokemon={setPokemon || vi.fn()}
-        />
+        <ThemeProvider>
+          <Search
+            initSearchValue={searchValue}
+            setPokemon={setPokemon || vi.fn()}
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
   };
