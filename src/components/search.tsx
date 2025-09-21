@@ -1,8 +1,12 @@
-import { useContext, useEffect, type FormEvent } from 'react';
+import {
+  useContext,
+  useEffect,
+  useSyncExternalStore,
+  type FormEvent,
+} from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 
 import { ThemeContext } from '../context/theme';
-import { useSearchLocalStorage } from '../hooks/search-local-storage';
 import { cn } from '../utils/cn';
 import { getNormalizedString } from '../utils/normalize';
 import { Button } from './ui/button';
@@ -10,8 +14,26 @@ import { Button } from './ui/button';
 const WARNING_TEXT = "Please enter the Pokémon's exact name.";
 export const searchId = 'search-value';
 
+const setSearchState = (newValue: string) => {
+  window.localStorage.setItem(searchId, newValue);
+
+  window.dispatchEvent(new StorageEvent('storage', { key: newValue }));
+};
+
+const store = {
+  getSnapshot: () => localStorage.getItem(searchId),
+  subscribe: (listener: () => void) => {
+    window.addEventListener('storage', listener);
+    return () => void window.removeEventListener('storage', listener);
+  },
+};
+
+if (!store.getSnapshot()) {
+  localStorage.setItem(searchId, '');
+}
+
 export const Search = () => {
-  const [searchValue, setSearchValue] = useSearchLocalStorage();
+  const searchValue = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const isThemeDark = useContext(ThemeContext);
   const navigate = useNavigate();
   const params = useParams();
@@ -22,7 +44,7 @@ export const Search = () => {
 
     if (typeof searchValue === 'string') {
       const normalizedValue = getNormalizedString(searchValue);
-      setSearchValue(normalizedValue);
+      setSearchState(normalizedValue);
 
       if (normalizedValue === '') {
         navigate(`/pokemon/list/${params.page || '1'}`);
@@ -37,7 +59,7 @@ export const Search = () => {
       params.pokemonName !== searchValue &&
       !location.pathname.includes('list')
     ) {
-      setSearchValue(params.pokemonName || '');
+      setSearchState(params.pokemonName || '');
     }
   }, []);
 
@@ -60,8 +82,8 @@ export const Search = () => {
               isThemeDark ? 'text-white' : 'text-slate-900'
             )}
             id={searchId}
-            value={searchValue}
-            onChange={(event) => setSearchValue(event.target.value)}
+            value={searchValue || ''}
+            onChange={(event) => setSearchState(event.target.value)}
           />
         </div>
         <Button>Search</Button>
