@@ -20,6 +20,7 @@ export const PokemonListItem = () => {
     data: pokemonData,
     isFetching,
     error,
+    refetch,
   } = useGetPokemonByPageQuery(params.page || '1');
 
   const dispatch = useAppDispatch();
@@ -82,6 +83,14 @@ export const PokemonListItem = () => {
 
   return (
     <>
+      <div>
+        <button
+          className="border-2 border-amber-300 cursor-pointer rounded-3xl px-4 py-1 hover:border-amber-200"
+          onClick={() => refetch()}
+        >
+          Refetch pokemons
+        </button>
+      </div>
       <div className="flex gap-10">
         <ul
           className={cn(
