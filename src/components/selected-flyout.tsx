@@ -1,0 +1,33 @@
+import { useContext } from 'react';
+import { Button } from './ui/button';
+import { ThemeContext } from '../context/theme';
+import { cn } from '../utils/cn';
+
+export const SelectedFlyout = ({
+  handleDownloadClick,
+  handleUnselectClick,
+  countOfItems,
+}: {
+  handleUnselectClick: () => void;
+  handleDownloadClick: () => void;
+  countOfItems: number;
+}) => {
+  const isThemeDark = useContext(ThemeContext);
+
+  return (
+    <div className="flex mt-4">
+      <div
+        className={cn(
+          'flex flex-col gap-3 border border-solid p-3 rounded-2xl',
+          isThemeDark ? 'text-white' : 'text-slate-900'
+        )}
+      >
+        <p>{`${countOfItems} ${countOfItems > 1 ? 'items' : 'item'} ${countOfItems > 1 ? 'are selected' : 'is select'}`}</p>
+        <div className="space-x-2">
+          <Button onClick={handleUnselectClick}>Unselect</Button>
+          <Button onClick={handleDownloadClick}>Download</Button>
+        </div>
+      </div>
+    </div>
+  );
+};
